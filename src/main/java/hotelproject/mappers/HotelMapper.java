@@ -29,9 +29,9 @@ public interface HotelMapper {
 
     // 4. 특정 호텔 조회
     @Select("SELECT * FROM hotel WHERE no=#{no}")
-    HotelVo findHotelById(int no);
+    HotelVo findHotelById(int no); 
 
     // 5. 전체 호텔 조회
     @Select("SELECT * FROM hotel")
-    List<HotelVo> findAllHotels();
+    List<HotelVo> findAllHotels();    
 }
