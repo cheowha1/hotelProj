@@ -14,7 +14,7 @@ import hotelproject.services.UserService;
 
 @RestController
 @RequestMapping("/users")
-public class UsersController {
+public class UserController {
 	
 	@Autowired
 	private UserService userService;
