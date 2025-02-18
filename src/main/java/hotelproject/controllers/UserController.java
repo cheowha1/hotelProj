@@ -29,9 +29,4 @@ public class UserController {
         return userService.authenticateUser(userVo);
     }
     
-    // 로그인 엔드포인트
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserVo loginVo) {
-        return userService.authenticateUser(loginVo);
-    }
 }
