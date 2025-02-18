@@ -1,5 +1,8 @@
 package hotelproject.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -103,8 +106,26 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // 3. 로그인 성공 (추후 JWT 토큰 발급 또는 세션 관리 추가 가능)
-        return ResponseEntity.ok("로그인에 성공했습니다.");
+        // 3. 로그인 성공 → 사용자 정보 반환 (닉네임, 등급, 포인트 포함)
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "로그인에 성공했습니다.");
+        response.put("nickname", foundUser.getNickname());
+        response.put("grade", foundUser.getGrade()); // 등급 추가 (admin인지 확인 가능)
+        response.put("point", foundUser.getPoint());
+
+        return ResponseEntity.ok(response);
+    }
+    
+    public UserVo getUserByToken(String token) {
+        // 토큰을 이용해 사용자 이메일 가져오기 (JWT 또는 세션 방식에 따라 구현)
+        String email = jwtUtil.getEmailFromToken(token);
+
+        if (email == null) {
+            return null;
+        }
+
+        // 이메일을 기준으로 사용자 조회
+        return userMapper.findByEmail(email);
     }
     
     @Override
