@@ -1,11 +1,10 @@
 package hotelproject.services;
 
 import org.springframework.http.ResponseEntity;
-
 import hotelproject.repositories.vo.UserVo;
 
 public interface UserService {
-	  // 이메일, 주민번호, 전화번호, 닉네임 중복 체크
+    // 이메일, 주민번호, 전화번호, 닉네임 중복 체크
     boolean isEmailAvailable(String email);
     boolean isSsnAvailable(String ssn);
     boolean isPhoneAvailable(String phone);
@@ -21,6 +20,4 @@ public interface UserService {
     ResponseEntity<String> authenticateUser(UserVo loginVo);
     
     void chargePoint(String id, int point);
-
-
 }
