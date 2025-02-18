@@ -17,6 +17,13 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    
+    private String maskSsn(String ssn) {
+        if (ssn == null || ssn.length() != 14 || ssn.charAt(6) != '-') {
+            throw new IllegalArgumentException("올바른 주민번호 형식이 아닙니다.");
+        }
+        return ssn.substring(0, 8) + "******";
+    }
 
     @Override
     public boolean isEmailAvailable(String email) {
@@ -61,6 +68,9 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body("이미 사용 중인 전화번호입니다.");
         }
         
+        // 주민번호 마스킹 적용
+        userVo.setSsn(maskSsn(userVo.getSsn()));
+        
         // 비밀번호 암호화 처리
         String rawPassword = userVo.getPassword();
         String encodedPassword = passwordEncoder.encode(rawPassword);
@@ -82,13 +92,18 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public ResponseEntity<String> authenticateUser(UserVo loginVo) {
+        // 1. 이메일을 기준으로 사용자 조회
         UserVo foundUser = userMapper.findByEmail(loginVo.getEmail());
         if (foundUser == null) {
-            return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다.");
+            return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
+
+        // 2. 비밀번호 검증 (암호화된 비밀번호와 입력된 비밀번호 비교)
         if (!passwordEncoder.matches(loginVo.getPassword(), foundUser.getPassword())) {
-            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
+
+        // 3. 로그인 성공 (추후 JWT 토큰 발급 또는 세션 관리 추가 가능)
         return ResponseEntity.ok("로그인에 성공했습니다.");
     }
     
