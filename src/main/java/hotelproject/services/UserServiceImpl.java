@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public ResponseEntity<String> authenticateUser(UserVo loginVo) {
+    public ResponseEntity<String> authenticateUser(UserVo loginVo) { 
         // 1. 이메일을 기준으로 사용자 조회
         UserVo foundUser = userMapper.findByEmail(loginVo.getEmail());
         if (foundUser == null) {
@@ -125,6 +125,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // 이메일을 기준으로 사용자 조회
+        return userMapper.findByEmail(email);
+    }
+    
+    public UserVo getUserByEmail(String email) {
         return userMapper.findByEmail(email);
     }
     
