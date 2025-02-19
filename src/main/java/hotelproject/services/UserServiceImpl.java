@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.UserVo;
 
@@ -124,4 +123,72 @@ public class UserServiceImpl implements UserService {
     public void chargePoint(String id, int point) {
         // 포인트 충전 로직 (추후 구현)
     }
+    
+    // <포인트 기능 추가>
+    //	포인트 적립
+    @Transactional
+    public void earnPoint(int userNo, int amount) {
+    	userMapper.earnPoints(userNo, amount);
+    	
+    }
+    
+    // 회원가입 시 기존회원 확인 후 기존회원 시 1000포인트 지급 
+    // 단. 기본 회원 아닐 시 포인트지급 없음
+    
+    @Transactional
+    public ResponseEntity<String> registerUserWithInitialPoints(UserVo user) {
+        // 중복 체크
+        if (!isEmailAvailable(user.getEmail())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
+        }
+        if (!isNicknameAvailable(user.getNickname())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
+        }
+        if (!isSsnAvailable(user.getSsn())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 주민번호입니다.");
+        }
+        if (!isPhoneAvailable(user.getPhone())) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 전화번호입니다.");
+        }
+
+        // 주민번호 마스킹 적용
+        user.setSsn(maskSsn(user.getSsn()));
+
+        // 비밀번호 암호화 처리
+        String rawPassword = user.getPassword();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        user.setPassword(encodedPassword);
+
+        try {
+            // 신규 회원인지 확인
+            UserVo existingUser = userMapper.findByEmail(user.getEmail());
+            if (existingUser != null) {
+                return ResponseEntity.badRequest().body("이미 가입된 회원입니다.");
+            }
+
+            // 회원 ID 가져오기
+            int userNo = user.getid();
+
+            // 신규 회원에게만 1000포인트 지급
+            userMapper.earnPoints(userNo, 1000);
+
+            return ResponseEntity.ok("회원가입 성공! 기본 1000포인트가 지급되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("회원가입 중 오류가 발생했습니다.");
+        }
+    }
+    
+    //	포인트 사용
+    @Transactional
+    public boolean usePoints(int userNo, int amount) {
+    	int updatedRows = userMapper.usePoints(userNo, amount);
+    	return updatedRows > 0;	//	업데이트 성공여부 반환
+    }
+    
+    //	유저 포인트 조회
+    public int getUserTotalPoints(int userNo) {
+    	   return userMapper.getUserTotalPoints(userNo); 	
+    }
+     
 }

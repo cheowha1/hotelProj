@@ -36,4 +36,20 @@
         SELECT * FROM users WHERE email = #{email}
     </select>
     
+    <!--포인트 기능추가 -->
+    <!-- 회원 포인트 조회 -->
+    <selet id="getUserTotalPoints" resultType="int">
+    SELECT point FROM users WHERE no = #{userNo}
+    </selet>
+    
+      <!-- 포인트 적립 -->
+    <update id="earnPoints">
+        UPDATE users SET point = point + #{amount} WHERE no = #{userNo}
+    </update>
+
+    <!-- 포인트 사용 -->
+    <update id="usePoints">
+        UPDATE users SET point = point - #{amount} WHERE no = #{userNo} AND point >= #{amount}
+    </update>
+    
 </mapper>

@@ -8,7 +8,5 @@ public interface HotelService {
     void updateHotel(HotelVo hotel);	//	호텔 정보수정
     void deleteHotel(int no);	//	호텔삭제
     HotelVo findHotelById(int no);	// 특정 호텔조회
-    List<HotelVo> getAllHotels();	//	전체 호텔 목록 조회
-    
-    
+    List<HotelVo> getAllHotels();	//	전체 호텔 목록 조회   
 }

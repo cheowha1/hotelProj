@@ -10,4 +10,7 @@ public interface ReservationService {
     int updateReservation(ReservationVo reservation);	//	예약수정
     int deleteReservation(int reservationNo);	//	예약취소
     List<ReservationVo> getUserReservations(String email); // 예약 내역 조회
+    boolean usePointForReservationPoints(int userNo, int amount);	//	예약 시 포인트 사용
+    void earnPointsFromReservation(int userNo, int amount);	//	예약 완료 후 포인트 적립
+    void refundPointsForCanceledReservation(int UserNo, int amount);	//	예약 취소 시 포인트 반환
 }

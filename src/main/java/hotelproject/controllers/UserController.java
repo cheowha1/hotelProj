@@ -3,9 +3,11 @@ package hotelproject.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hotelproject.repositories.vo.UserVo;
@@ -56,5 +58,14 @@ public class UserController {
         UserVo user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
     }
+    
+    //	<포인트 기능 추가>
+    // 포인트 조회 (id로 조회)
+    @GetMapping("/{id}/points")
+    public ResponseEntity<Integer> getUserPoints(@PathVariable String id,@RequestParam int amount) {
+    	int points = userService.getUserTotalPoints(id);
+    	return ResponseEntity.ok(points);
+    }
+    @PostMapping("/{id")
     
 }

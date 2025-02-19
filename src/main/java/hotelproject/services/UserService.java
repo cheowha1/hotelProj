@@ -1,5 +1,4 @@
 package hotelproject.services;
-
 import org.springframework.http.ResponseEntity;
 import hotelproject.repositories.vo.UserVo;
 
@@ -19,5 +18,21 @@ public interface UserService {
     // 로그인
     ResponseEntity<String> authenticateUser(UserVo loginVo);
     
+    // 포인트 충전
     void chargePoint(String id, int point);
+    
+    // <포인트 기능 추가>
+    // 포인트 사용 ( 사용 성공 여부 반환)
+    boolean usePoints(String id, int amount);
+    
+    // 회원 포인트 조회
+    int getUserTotalPoints(String id);
+    
+    // 포인트 적립
+    void earnPoints(int UserNo, int amount);
+    
+    // 회원가입 시 기본 포인트 적립(신규회원대상)
+    ResponseEntity<String> registerUserWithInitialPoints(UserVo userVo, int intialPoints);
+    
+    
 }
