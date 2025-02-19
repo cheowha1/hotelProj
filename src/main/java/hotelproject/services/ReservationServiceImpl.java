@@ -71,7 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
         return false;
     }
  
-    //	예약실패 시 포인트 차감없음
+    //	예약 실패 시 포인트 차감없음
     @Override
     @Transactional
     public int insertReservation(ReservationVo reservation, boolean usePoints) {
@@ -89,11 +89,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
         
         int result = reservationMapper.insertReservation(reservation);
-        return result;
-
     }
     
-   
     // **예약 취소 시 포인트 반환**
     @Override
     @Transactional
@@ -102,5 +99,28 @@ public class ReservationServiceImpl implements ReservationService {
         userMapper.insertPointLog(userNo, amount, "refund", "호텔 예약 취소로 인한 포인트 반환");
     }
      
+    //	예약 후 포인트 차감
+    @Override
+    @Transactional
+    public int insertReservationWithPoints(ReservationVo reservation, boolean usePoints ) {
+    	if (usePoints) {
+    		int currentPoints = userMapper.getUserTotalPrice()) {
+    			return -1; // 포인트 부족
+    		}
+    		
+    		// 예약 시 포인트 부족할 시 포인트 차감실패
+    		int updatedRows = userMapper.usePoints(reservation.getUserNo(), reservation.getTotalPrice());
+    		if (updatedRows == 0) {
+    			return -1; // 포인트 차감 실패 
+    		}
+    		
+    		userMapper.insertPointLog(reservation.getUserNo(), reservation.getTotalPrice(), "use", "호텔 예약 결제");
+    	}
+    	int result = reservationMapper.insertReservation(reservation);
+    	return result;
+    	
+    }
+    
+    
 }
     
