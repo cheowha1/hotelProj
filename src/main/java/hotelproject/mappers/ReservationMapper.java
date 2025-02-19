@@ -13,7 +13,7 @@ public interface ReservationMapper {
     @Options(useGeneratedKeys = true, keyProperty = "reservationNo")
     int insertReservation(ReservationVo reservation);
 
-    //	2. 에약등록
+    //	2. 예약등록
     @Select("SELECT * FROM reservation WHERE reservation_no = #{reservationNo}")
     ReservationVo selectReservationById(int reservationNo);
 

@@ -87,14 +87,10 @@ public class ReservationServiceImpl implements ReservationService {
                 return -1; // 포인트 사용 실패
             }
         }
-
+        
         int result = reservationMapper.insertReservation(reservation);
-        if (result > 0) {
-            int earnedPoints = (int) (reservation.getTotalPrice() * 0.1); // 결제 금액의 10% 적립
-            userMapper.earnPoints(reservation.getUserNo(), earnedPoints);
-            userMapper.insertPointLog(reservation.getUserNo(), earnedPoints, "earn", "호텔 예약 적립 포인트");
-        }
         return result;
+
     }
     
    
