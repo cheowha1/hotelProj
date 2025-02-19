@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import hotelproject.mappers.ReservationMapper;
+import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.ReservationVo;
 
 @Service
@@ -14,6 +14,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private ReservationMapper reservationMapper;
+    
+    @Autowired
+    private UserMapper userMapper;
 
     // 예약등록
     @Override
@@ -50,4 +53,32 @@ public class ReservationServiceImpl implements ReservationService {
     public List<ReservationVo> getUserReservations(String email) {
         return reservationMapper.selectReservationsByEmail(email);
     }
+    
+    // 예약 시 포인트 사용
+    @Override
+    @Transactional
+    public boolean usePointForReservationPoint(int userNo, int amount) {
+        int currentPoint = userMapper.getUserTotalPoint(userNo);
+        if (currentPoint < amount) {
+            return false; // 포인트 부족
+        }
+
+        int updatedRows = userMapper.usePoints(userNo, amount);
+        if (updatedRows > 0) {
+            // 포인트 사용 내역 저장
+            userMapper.insertPointLog(userNo, amount, "use", "호텔 예약 결제");
+            return true;
+        }
+        return false;
+    }
+    	
+    // **예약 취소 시 포인트 반환**
+    @Override
+    @Transactional
+    public void refundPointsForCanceledReservation(int userNo, int amount) {
+        userMapper.earnPoints(userNo, amount);
+        userMapper.insertPointLog(userNo, amount, "refund", "호텔 예약 취소로 인한 포인트 반환");
+    }
+}
+    
 }
