@@ -8,6 +8,7 @@ public class UserVo {
     private String ssn;
     private String phone;
     private String grade;      // 기본 등급 (예: "일반")
+    private String name;
     
     // 기본 생성자
     public UserVo() {}
@@ -55,4 +56,11 @@ public class UserVo {
     public void setGrade(String grade) {
         this.grade = grade;
     }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
