@@ -1,4 +1,7 @@
 package hotelproject.services;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import hotelproject.repositories.vo.UserVo;
 
@@ -22,11 +25,12 @@ public interface UserService {
     void chargePoint(String id, int point);
     
     // <포인트 기능 추가>
-    // 포인트 사용 ( 사용 성공 여부 반환)
+    // 포인트 결제 ( 사용 성공 여부 반환)
     boolean usePoints(String id, int amount);
     
-    // 회원 포인트 조회
-    int getUserTotalPoints(String id);
+    // 회원 포인트 사용내역 조회
+    List<Map<String, Object>> getUserPointHistory(int UserNo);
+    void chargePoint(int userNo, int amount);
     
     // 포인트 적립
     void earnPoints(int UserNo, int amount);
