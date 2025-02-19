@@ -60,8 +60,32 @@ public class UserController {
     }
     
     //	<포인트 기능 추가>
-    
-    @GetMapping
+    // 포인트 사용 내역 조회 API
+    @GetMapping("/{userNo}/point-history")
+    public ResponseEntity<?> getUserPointHistory(@PathVariable int userNo) {
+        Map<String, Object> history = userService.getUserPointHistory(userNo);
+        if (history == null || history.isEmpty()) {
+            return ResponseEntity.badRequest().body("포인트 내역이 없습니다.");
+        }
+        return ResponseEntity.ok(history);
+    }
+
+    // 결제 시 포인트 적립 API
+    @PostMapping("/{userNo}/earn-points")
+    public ResponseEntity<String> addPointsAfterPayment(@PathVariable int userNo, @RequestParam int amount) {
+        userService.addPointsAfterPayment(userNo, amount);
+        return ResponseEntity.ok("포인트가 적립되었습니다.");
+    }
+
+    // 마이페이지에서 포인트 충전 API
+    @PostMapping("/{userNo}/charge-points")
+    public ResponseEntity<String> chargePoints(@PathVariable int userNo, @RequestParam int amount) {
+        boolean success = userService.chargePoints(userNo, amount);
+        if (success) {
+            return ResponseEntity.ok("포인트 충전 성공");
+        }
+        return ResponseEntity.status(400).body("포인트 충전 실패");
+    }
     
     
 
