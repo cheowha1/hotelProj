@@ -39,7 +39,8 @@
     <!--포인트 기능추가 -->
     <!-- 회원의 포인트 사용내역조회 -->
 	<select id="getUserPointHistory" resulType="int">
-	SELECT point FROM users WHERE no =#{userNo}
+	SELECT no, point, updated_at FROM users
+	WHERE no = #{userNo}
 	</select>
 	 
       <!-- 포인트 적립 -->
@@ -50,6 +51,20 @@
     <!-- 포인트 사용 -->
     <update id="usePoints">
         UPDATE users SET point = point - #{amount} WHERE no = #{userNo} AND point >= #{amount}
+    </update>
+    
+    <!-- 결제 후 포인트 적립 (결제 금액의 10% 적립) -->
+    <update id="addPointsAfterPayment">
+        UPDATE users 
+        SET point = point + (#{amount} * 0.1) 
+        WHERE no = #{userNo}
+    </update>
+    
+     <!-- 마이페이지에서 포인트 충전 -->
+    <update id="chargeUserPoints">
+        UPDATE users 
+        SET point = point + #{amount} 
+        WHERE no = #{userNo}
     </update>
     
 </mapper>
