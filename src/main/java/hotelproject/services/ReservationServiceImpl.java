@@ -1,7 +1,6 @@
 package hotelproject.services;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,12 +53,12 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationMapper.selectReservationsByEmail(email);
     }
     
-    // 예약 시 포인트 사용
+    // **예약 시 포인트 사용**
     @Override
     @Transactional
-    public boolean usePointForReservationPoint(int userNo, int amount) {
-        int currentPoint = userMapper.getUserTotalPoint(userNo);
-        if (currentPoint < amount) {
+    public boolean usePointForReservationPoints(int userNo, int amount) {
+        int currentPoints = userMapper.getUserTotalPoints(userNo);
+        if (currentPoints < amount) {
             return false; // 포인트 부족
         }
 
@@ -71,7 +70,34 @@ public class ReservationServiceImpl implements ReservationService {
         }
         return false;
     }
-    	
+ 
+    //	예약실패 시 포인트 차감없음
+    @Override
+    @Transactional
+    public int insertReservation(ReservationVo reservation, boolean usePoints) {
+        if (usePoints) {
+            int currentPoints = userMapper.getUserTotalPoints(reservation.getUserNo());
+
+            if (currentPoints < reservation.getTotalPrice()) {
+                return -1; // 포인트 부족
+            }
+
+            boolean isPointUsed = usePointForReservationPoints(reservation.getUserNo(), reservation.getTotalPrice());
+            if (!isPointUsed) {
+                return -1; // 포인트 사용 실패
+            }
+        }
+
+        int result = reservationMapper.insertReservation(reservation);
+        if (result > 0) {
+            int earnedPoints = (int) (reservation.getTotalPrice() * 0.1); // 결제 금액의 10% 적립
+            userMapper.earnPoints(reservation.getUserNo(), earnedPoints);
+            userMapper.insertPointLog(reservation.getUserNo(), earnedPoints, "earn", "호텔 예약 적립 포인트");
+        }
+        return result;
+    }
+    
+   
     // **예약 취소 시 포인트 반환**
     @Override
     @Transactional
@@ -79,6 +105,6 @@ public class ReservationServiceImpl implements ReservationService {
         userMapper.earnPoints(userNo, amount);
         userMapper.insertPointLog(userNo, amount, "refund", "호텔 예약 취소로 인한 포인트 반환");
     }
+     
 }
     
-}
