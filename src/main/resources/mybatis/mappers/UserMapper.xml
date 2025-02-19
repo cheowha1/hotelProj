@@ -67,4 +67,10 @@
         WHERE no = #{userNo}
     </update>
     
+    <!-- 포인트 차감 -->
+    <update id="usePoints">
+    UPDATE users SET point = point - #{amount}
+    WHERE no = #{userNo} AND point >= #{amount};
+    </update>
+    
 </mapper>
