@@ -30,4 +30,8 @@ public interface ReservationMapper {
     //	5. 예약취소(삭제)	
     @Delete("DELETE FROM reservation WHERE reservation_no = #{reservationNo}")
     int deleteReservation(int reservationNo);
+    
+    // 6. history 
+    @Select("SELECT * FROM reservation WHERE user_no = (SELECT user_no FROM user WHERE email = #{email})")
+    List<ReservationVo> selectReservationsByEmail(String email);
 }

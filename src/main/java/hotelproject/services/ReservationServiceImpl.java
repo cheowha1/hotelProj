@@ -1,11 +1,14 @@
 package hotelproject.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import hotelproject.mappers.ReservationMapper;
 import hotelproject.repositories.ReservationDao;
 import hotelproject.repositories.vo.ReservationVo;
-import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -42,5 +45,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public int deleteReservation(int reservationNo) {
         return reservationDao.deleteReservation(reservationNo);
+    }
+    
+    @Autowired
+    private ReservationMapper reservationMapper;
+
+    @Override
+    public List<ReservationVo> getUserReservations(String email) {
+        return reservationMapper.selectReservationsByEmail(email);
     }
 }

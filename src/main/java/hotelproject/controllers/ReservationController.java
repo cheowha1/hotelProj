@@ -1,12 +1,19 @@
 package hotelproject.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import hotelproject.repositories.vo.ReservationVo;
 import hotelproject.services.ReservationService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/reservation")
@@ -48,5 +55,17 @@ public class ReservationController {
     public String deleteReservation(@PathVariable("reservationNo") int reservationNo) {
         reservationService.deleteReservation(reservationNo);
         return "redirect:/reservation/list";
+    }
+    
+    @GetMapping("/history")
+    public ResponseEntity<List<ReservationVo>> getUserReservations(HttpSession session) {
+        String email = (String) session.getAttribute("userEmail");
+
+        if (email == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+
+        List<ReservationVo> reservations = reservationService.getUserReservations(email);
+        return ResponseEntity.ok(reservations);
     }
 }

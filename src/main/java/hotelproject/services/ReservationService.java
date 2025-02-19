@@ -9,4 +9,5 @@ public interface ReservationService {
     List<ReservationVo> getAllReservations();	//	예약 목록조회
     int updateReservation(ReservationVo reservation);	//	예약수정
     int deleteReservation(int reservationNo);	//	예약취소
+    List<ReservationVo> getUserReservations(String email); // 예약 내역 조회
 }
