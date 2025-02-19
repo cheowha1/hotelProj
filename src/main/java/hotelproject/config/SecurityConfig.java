@@ -20,11 +20,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (API 사용 시 필요)
             .authorizeHttpRequests(auth -> auth
-            	.requestMatchers("/user/signup", "/user/login").permitAll()  // 회원가입 및 로그인 API 허용
-                .requestMatchers("/api/**").authenticated() // 나머지 API는 인증 필요
+                .requestMatchers("/user/signup", "/user/login").permitAll()  // 회원가입 및 로그인 API 허용
+                .requestMatchers("/admin/**").authenticated() //  관리자 API 보호
+                .requestMatchers("/reservation/history").authenticated() //  로그인한 사용자만 예약 내역 조회 가능
             )
             .formLogin(login -> login
-                .defaultSuccessUrl("/home", true)
+                .defaultSuccessUrl("/main", true) // 로그인 성공 시 메인 페이지로 이동
                 .permitAll()
             )
             .logout(logout -> logout.permitAll());
