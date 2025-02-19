@@ -60,12 +60,9 @@ public class UserController {
     }
     
     //	<포인트 기능 추가>
-    // 포인트 조회 (id로 조회)
-    @GetMapping("/{id}/points")
-    public ResponseEntity<Integer> getUserPoints(@PathVariable String id,@RequestParam int amount) {
-    	int points = userService.getUserTotalPoints(id);
-    	return ResponseEntity.ok(points);
-    }
-    @PostMapping("/{id")
     
+    @GetMapping
+    
+    
+
 }
