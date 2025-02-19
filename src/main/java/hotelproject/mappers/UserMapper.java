@@ -1,6 +1,9 @@
 package hotelproject.mappers;
 
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import hotelproject.repositories.vo.UserVo;
@@ -27,13 +30,14 @@ public interface UserMapper {
     int saveUser(UserVo userVo);
     
 //    <포인트 기능 추가>
-    // 회원의 총 포인트 조회
-   int getUserTotalPoints(@Param("userNo") int userNo);
+    // 회원의 포인트 사용내역 조회
+   List<Map<String, Object>> getUserPointHistory(int userNo);
+   void chaergePoint(@Param("userNo") int userNo, @Param("amount") int amount);
 
    // 포인트 적립 (+= 연산)
    void earnPoints(@Param("userNo") int userNo, @Param("amount") int amount);
 
-    // 포인트 사용 (-= 연산, 포인트 부족 시 업데이트 안 함)
+    // 포인트 사용(=결제) (-= 연산, 포인트 부족 시 업데이트 안 함)
    int usePoints(@Param("userNo") int userNo, @Param("amount") int amount);
  
 }
