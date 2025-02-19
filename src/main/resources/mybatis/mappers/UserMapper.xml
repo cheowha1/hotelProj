@@ -67,10 +67,10 @@
         WHERE no = #{userNo}
     </update>
     
-    <!-- 포인트 차감 -->
-    <update id="usePoints">
+    <!-- 호텔 예약 시 포인트 차감 -->
+    <update id="deductPointForReservation">
     UPDATE users SET point = point - #{amount}
     WHERE no = #{userNo} AND point >= #{amount};
     </update>
-    
+   
 </mapper>
