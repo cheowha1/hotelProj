@@ -1,19 +1,16 @@
 package hotelproject.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hotelproject.repositories.vo.UserVo;
 import hotelproject.services.UserService;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
@@ -30,26 +27,34 @@ public class UserController {
     
     // 로그인 엔드포인트
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserVo userVo) {
-        return userService.authenticateUser(userVo);
+    public ResponseEntity<String> login(@RequestBody UserVo loginVo, HttpSession session) {
+        UserVo foundUser = userService.authenticateUser(loginVo);
+        if (foundUser == null) {
+            return ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다.");
+        }
+
+        //  세션에 사용자 정보 저장
+        session.setAttribute("userEmail", foundUser.getEmail());
+
+        return ResponseEntity.ok("로그인 성공");
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); //  세션 무효화 (로그아웃)
+        return ResponseEntity.ok("로그아웃 성공");
     }
     
     @GetMapping("/info")
-    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
-        // 토큰을 이용해 현재 로그인한 사용자 정보 조회
-        UserVo foundUser = userService.getUserByToken(token);
+    public ResponseEntity<?> getUserInfo(HttpSession session) {
+        String email = (String) session.getAttribute("userEmail");
 
-        if (foundUser == null) {
+        if (email == null) {
             return ResponseEntity.status(401).body("로그인이 필요합니다.");
         }
 
-        // 사용자 정보 반환
-        Map<String, Object> response = new HashMap<>();
-        response.put("nickname", foundUser.getNickname());
-        response.put("grade", foundUser.getGrade());
-        response.put("point", foundUser.getPoint());
-
-        return ResponseEntity.ok(response);
+        UserVo user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
     
 }

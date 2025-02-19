@@ -116,18 +116,6 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(response);
     }
     
-    public UserVo getUserByToken(String token) {
-        // 토큰을 이용해 사용자 이메일 가져오기 (JWT 또는 세션 방식에 따라 구현)
-        String email = jwtUtil.getEmailFromToken(token);
-
-        if (email == null) {
-            return null;
-        }
-
-        // 이메일을 기준으로 사용자 조회
-        return userMapper.findByEmail(email);
-    }
-    
     public UserVo getUserByEmail(String email) {
         return userMapper.findByEmail(email);
     }
