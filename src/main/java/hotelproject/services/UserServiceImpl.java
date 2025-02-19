@@ -185,10 +185,24 @@ public class UserServiceImpl implements UserService {
     	int updatedRows = userMapper.usePoints(userNo, amount);
     	return updatedRows > 0;	//	업데이트 성공여부 반환
     }
-    
-    //	유저 포인트 조회
-    public int getUserTotalPoints(int userNo) {
-    	   return userMapper.getUserTotalPoints(userNo); 	
+      
+    //	회원의 사용포인트 내역 조회
+    public Map<String, Object> getUserPointHistory(int userNo) {
+        return userMapper.getUserPointHistory(userNo);
     }
-     
+    
+    //	결제 시 포인트 적립 (결제 금액의 10% 적립)
+    @Transactional
+    public void addPointsAfterPayment(int userNo, int amount) {
+        userMapper.addPointsAfterPayment(userNo, amount);
+    }
+    
+    // 마이페이지에서 포인트 충전
+    @Transactional
+    public boolean chargePoints(int userNo, int amount) {
+        int updatedRows = userMapper.chargeUserPoints(userNo, amount);
+        return updatedRows > 0;
+    }
+    
+    
 }
