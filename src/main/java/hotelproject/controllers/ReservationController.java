@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,4 +69,18 @@ public class ReservationController {
         List<ReservationVo> reservations = reservationService.getUserReservations(email);
         return ResponseEntity.ok(reservations);
     }
+    
+    // 예약 시 포인트 차감
+    @PostMapping("/insertWithPoints")
+    public String insertReservationWithPoints(ReservationVo reservation, boolean usePoints) {
+    	int result = reservationService.insertReservation(reservation, usePoints);
+    	
+    	if (result == -1) {
+    		return "redirect:/reservation/list?error=insufficient_points";
+    	}
+    	
+    	return "redirect:/reservation/list";
+    	
+   }
+    
 }
