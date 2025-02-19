@@ -1,6 +1,7 @@
 package hotelproject.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.UserVo;
 
@@ -127,9 +129,8 @@ public class UserServiceImpl implements UserService {
     // <포인트 기능 추가>
     //	포인트 적립
     @Transactional
-    public void earnPoint(int userNo, int amount) {
-    	userMapper.earnPoints(userNo, amount);
-    	
+    public void earnPoints(int userNo, int amount) { 
+        userMapper.earnPoints(userNo, amount);
     }
     
     // 회원가입 시 기존회원 확인 후 기존회원 시 1000포인트 지급 
@@ -167,7 +168,7 @@ public class UserServiceImpl implements UserService {
             }
 
             // 회원 ID 가져오기
-            int userNo = user.getid();
+            int userNo = user.getId();
 
             // 신규 회원에게만 1000포인트 지급
             userMapper.earnPoints(userNo, 1000);
@@ -187,9 +188,10 @@ public class UserServiceImpl implements UserService {
     }
       
     //	회원의 사용포인트 내역 조회
-    public Map<String, Object> getUserPointHistory(int userNo) {
+    public List<Map<String, Object>> getUserPointHistory(int userNo) {
         return userMapper.getUserPointHistory(userNo);
     }
+
     
     //	결제 시 포인트 적립 (결제 금액의 10% 적립)
     @Transactional

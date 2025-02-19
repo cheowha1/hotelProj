@@ -5,10 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import hotelproject.mappers.ReservationMapper;
 import hotelproject.repositories.vo.ReservationVo;
-import hotelproject.mappers.ReservationMapper;
-import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -46,9 +45,6 @@ public class ReservationServiceImpl implements ReservationService {
     public int deleteReservation(int reservationNo) {
         return reservationMapper.deleteReservation(reservationNo);
     }
-    
-    @Autowired
-    private ReservationMapper reservationMapper;
 
     @Override
     public List<ReservationVo> getUserReservations(String email) {

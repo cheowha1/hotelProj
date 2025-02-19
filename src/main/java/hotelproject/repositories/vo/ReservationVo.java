@@ -21,6 +21,6 @@ public class ReservationVo {
 	private Date checkOutDate;	//	체크아웃 날짜
 	private int guestCount;		// 	예약 시 인원수제한
 	private int totalPrice;	//	총가격	
-	private String PaymentStatus;		//	결제상태
+	private String paymentStatus;		//	결제상태
 	private String reservationStatus;	//	예약상태	
 }

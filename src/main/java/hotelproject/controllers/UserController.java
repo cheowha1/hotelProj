@@ -36,7 +36,7 @@ public class UserController {
         }
 
         //  세션에 사용자 정보 저장
-        session.setAttribute("userEmail", foundUser.getEmail());
+        session.setAttribute("loggedInUser", foundUser);
 
         return ResponseEntity.ok("로그인 성공");
     }

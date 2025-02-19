@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hotelproject.repositories.vo.UserVo;
+import hotelproject.services.AdminService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 	
 	@Autowired
-	private adminService adminService;
+	private AdminService adminService;
 	
 	// 모든 회원 목록 조회
 	@GetMapping("/users")
@@ -32,7 +33,7 @@ public class AdminController {
 	@PutMapping("/users/{id}/grade")
 	public ResponseEntity<String> updateUserGrade(@PathVariable int id, @RequestParam String grade) {
 		adminService.updateUserGrade(id, grade);
-		return ResonseEntity.ok("회원 등급이 변경되었습니다.");
+		return ResponseEntity.ok("회원 등급이 변경되었습니다.");
 	}
 	
     // 회원 포인트 지급
@@ -56,4 +57,4 @@ public class AdminController {
         return ResponseEntity.ok("포인트 정책이 변경되었습니다.");
     }
 }
-}
+

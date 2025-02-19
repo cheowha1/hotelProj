@@ -22,7 +22,7 @@ public interface UserService {
     ResponseEntity<String> authenticateUser(UserVo loginVo);
     
     // 포인트 충전
-    void chargePoint(String id, int point);
+    void chargePoint(int userNo, int amount);
     
     // <포인트 기능 추가>
     // 포인트 결제 ( 사용 성공 여부 반환)
@@ -30,7 +30,7 @@ public interface UserService {
     
     // 회원 포인트 사용내역 조회
     List<Map<String, Object>> getUserPointHistory(int UserNo);
-    void chargePoint(int userNo, int amount);
+ 
     
     // 포인트 적립
     void earnPoints(int UserNo, int amount);

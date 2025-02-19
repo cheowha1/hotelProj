@@ -55,7 +55,7 @@ public interface UserMapper {
 //    <포인트 기능 추가>
     // 회원의 포인트 사용내역 조회
    List<Map<String, Object>> getUserPointHistory(int userNo);
-   void chaergePoint(@Param("userNo") int userNo, @Param("amount") int amount);
+   void chargePoint(@Param("userNo") int userNo, @Param("amount") int amount);
 
    // 포인트 적립 (+= 연산)
    void earnPoints(@Param("userNo") int userNo, @Param("amount") int amount);
