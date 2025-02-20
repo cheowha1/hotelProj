@@ -1,11 +1,9 @@
 package hotelproject.services;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import hotelproject.mappers.ReviewMapper;
 import hotelproject.repositories.vo.ReviewVo;
-import hotelproject.services.ReviewService;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -28,7 +26,7 @@ public class ReviewServiceImpl implements ReviewService {
  // 별점 등록 기능 추가
     @Override
     @Transactional
-    public void insertRating(int hotelName, int userid, int rating) {
+    public void insertRating(int hotelName, Long userid, int rating) {
         reviewMapper.insertRating(hotelName, userid, rating);
     }
 
