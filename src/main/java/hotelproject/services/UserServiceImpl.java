@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.UserVo;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public ResponseEntity<String> authenticateUser(UserVo loginVo) { 
+    public ResponseEntity<String> authenticateUser(UserVo loginVo, HttpSession session) { 
         // 1. 이메일을 기준으로 사용자 조회
         UserVo foundUser = userMapper.findByEmail(loginVo.getEmail());
         if (foundUser == null) {
@@ -107,7 +108,10 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        // 3. 로그인 성공 → 사용자 정보 반환 (닉네임, 등급, 포인트 포함)
+        // 3. 로그인 성공 → 사용자 정보 세션에 저장
+        session.setAttribute("loggedInUser", foundUser);
+        
+        // 4. 사용자 정보 반환 (닉네임, 등급, 포인트 포함)
         Map<String, Object> response = new HashMap<>();
         response.put("message", "로그인에 성공했습니다.");
         response.put("nickname", foundUser.getNickname());
