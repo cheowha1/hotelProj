@@ -11,5 +11,5 @@ public interface ReviewService {
 	void updateReview(ReviewVo review);	//	리뷰 수정
 	void deleteReview(ReviewVo review);	//	리뷰 삭제
 	String getStarRating(int hotelName);	//	별점 등급을 계산하여 반환하는 메서드\
-	void insertRating(ReviewVo review);	//	별점 등록
+	void insertRating(int hotel, int userid, int rating);	//	별점 등록
 }
