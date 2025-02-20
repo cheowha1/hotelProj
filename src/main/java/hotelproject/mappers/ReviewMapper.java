@@ -13,5 +13,7 @@ public interface ReviewMapper {
 	Double getAverageRating(@Param("hotelName") int hotelName);	// 평균별점 조회
 	void updateReview(ReviewVo review);	//	리뷰 수정
 	void deleteReview(ReviewVo review);	//	리뷰 삭제
+	void insertRating(@Param("hotelName") int hotelName, 
+		              @Param("userid") Long userid, @Param("rating") int rating ); // 별점 등록
 
 }
