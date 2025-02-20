@@ -37,7 +37,7 @@ public class ReviewController {
     // 호텔의 리뷰 조회
     @GetMapping("/{hotelName}")
     public ResponseEntity<List<ReviewVo>> getReviews(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getReivews(hotelName));
+        return ResponseEntity.ok(reviewService.getReviews(hotelName));
     }
 
     // 호텔의 평균 평점 조회
