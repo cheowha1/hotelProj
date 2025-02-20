@@ -38,5 +38,8 @@ public interface UserService {
     // 회원가입 시 기본 포인트 적립(신규회원대상)
     ResponseEntity<String> registerUserWithInitialPoints(UserVo userVo, int intialPoints);
     
+    // 포인트 충전
+    void chargePoint(String userId, int amount);
+
     
 }

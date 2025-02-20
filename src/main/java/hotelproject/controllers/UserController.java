@@ -1,5 +1,7 @@
 package hotelproject.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +82,7 @@ public class UserController {
     // 마이페이지에서 포인트 충전 API
     @PostMapping("/{userNo}/charge-points")
     public ResponseEntity<String> chargePoints(@PathVariable int userNo, @RequestParam int amount) {
-        boolean success = userService.chargePoints(userNo, amount);
+        boolean success = userService.chargePoint(userNo, amount);
         if (success) {
             return ResponseEntity.ok("포인트 충전 성공");
         }

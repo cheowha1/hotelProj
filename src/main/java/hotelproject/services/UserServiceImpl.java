@@ -202,9 +202,16 @@ public class UserServiceImpl implements UserService {
     // 마이페이지에서 포인트 충전
     @Transactional
     public boolean chargePoints(int userNo, int amount) {
-        int updatedRows = userMapper.chargeUserPoints(userNo, amount);
+        // 결제 금액의 10% 추가 지급
+        int bonus = (int) (amount * 0.1);
+        int totalAmount = amount + bonus;
+
+        // 포인트 업데이트
+        int updatedRows = userMapper.chargeUserPoints(userNo, totalAmount);
+
         return updatedRows > 0;
     }
+
     
     
 }
