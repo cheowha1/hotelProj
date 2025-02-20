@@ -31,5 +31,11 @@
     <delete id="deleteReview">
         DELETE FROM reviews WHERE userid = #{userid} AND hotel_name = #{hotelName};
     </delete>
-
+    
+    <!-- 별점 등록 -->
+    <insert id="insertRating">
+    INSERT INTO reviews (hotel_name, userid, rating, created_at)
+    VALUES (#{hotelName}, #{userId}, #{rating}, NOW());
+	</insert>
+    
 </mapper>
