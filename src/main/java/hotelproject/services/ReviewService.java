@@ -6,7 +6,7 @@ import hotelproject.repositories.vo.ReviewVo;
 
 public interface ReviewService {
 	void insertReview(ReviewVo review);	//	리뷰 등록
-	List<ReviewVo> getReivews(int hotelName); // 호텔이름으로 리뷰목록 조회
+	List<ReviewVo> getReviews(int hotelName); // 호텔이름으로 리뷰목록 조회
 	double getAverageRating(int hotelName);	//	호텔의 평균 별점 조회
 	void updateReview(ReviewVo review);	//	리뷰 수정
 	void deleteReview(ReviewVo review);	//	리뷰 삭제
