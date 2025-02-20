@@ -1,9 +1,11 @@
 package hotelproject.services;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import hotelproject.mappers.ReservationMapper;
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.ReservationVo;
@@ -89,6 +91,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
         
         int result = reservationMapper.insertReservation(reservation);
+        return result;
     }
     
     // **예약 취소 시 포인트 반환**
@@ -102,20 +105,22 @@ public class ReservationServiceImpl implements ReservationService {
     //	예약 후 포인트 차감
     @Override
     @Transactional
-    public int insertReservationWithPoints(ReservationVo reservation, boolean usePoints ) {
-    	if (usePoints) {
-    		int currentPoints = userMapper.getUserTotalPrice()) {
-    			return -1; // 포인트 부족
-    		}
-    		
-    		// 예약 시 포인트 부족할 시 포인트 차감실패
-    		int updatedRows = userMapper.usePoints(reservation.getUserNo(), reservation.getTotalPrice());
-    		if (updatedRows == 0) {
-    			return -1; // 포인트 차감 실패 
-    		}
-    		
-    		userMapper.insertPointLog(reservation.getUserNo(), reservation.getTotalPrice(), "use", "호텔 예약 결제");
-    	}
+    public int insertReservationWithPoints(ReservationVo reservation, boolean usePoints) {
+        if (usePoints) {
+            int currentPoints = userMapper.getUserTotalPoints(reservation.getUserNo()); // ✅ 오타 수정
+
+            if (currentPoints < reservation.getTotalPrice()) {
+                return -1; // 포인트 부족
+            }
+            
+            // 예약 시 포인트 부족할 시 포인트 차감 실패
+            int updatedRows = userMapper.usePoints(reservation.getUserNo(), reservation.getTotalPrice());
+            if (updatedRows == 0) {
+                return -1; // 포인트 차감 실패 
+            }
+            
+            userMapper.insertPointLog(reservation.getUserNo(), reservation.getTotalPrice(), "use", "호텔 예약 결제");
+        }
     	int result = reservationMapper.insertReservation(reservation);
     	return result;
     	
