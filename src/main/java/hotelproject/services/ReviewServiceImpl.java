@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import hotelproject.repositories.mapper.ReviewMapper;
+import hotelproject.mappers.ReviewMapper;
 import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.services.ReviewService;
 
@@ -13,21 +13,28 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewMapper reviewMapper;
     
-    // 	리뷰메퍼로 설정
+    // 	ReviewMapper 주입
     public ReviewServiceImpl(ReviewMapper reviewMapper) {
         this.reviewMapper = reviewMapper;
     }
 
-    //	리뷰등록
+    //	리뷰등록 
     @Override
     @Transactional
     public void insertReview(ReviewVo review) {
         reviewMapper.insertReview(review);
     }
     
+    //	별점등록
+    @Override
+    @Transactional
+    public void insertRating(int hotelName, Long userId, int rating) {
+    	reviewMapper.insertRating(hotelName, userid, rating);
+    }
+       
     //	리뷰목록 조회
     @Override
-    public List<ReviewVo> getReivews(int hotelName) {
+    public List<ReviewVo> getReviews(int hotelName) {
         return reviewMapper.getReviewsByHotel(hotelName);
     }
 
