@@ -17,13 +17,23 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    // 리뷰 추가
+    // 리뷰 등록
     @PostMapping
     public ResponseEntity<String> addReview(@RequestBody ReviewVo review) {
         reviewService.insertReview(review);
         return ResponseEntity.ok("리뷰가 등록되었습니다.");
     }
-
+    
+    // 별점 등록
+    @PostMapping("/{hotelName}/rating")
+    public ResponseEntity<String> insertRating(
+    	   @PathVariable int hotelName,
+    	   @RequestParam Long userId,
+    	   @RequestParam int rating) {
+    	reviewService.insertRating(hotelName, userId, rating);
+    	return ResponseEntity.ok("별점이 등록되었습니다.");
+    }
+    
     // 호텔의 리뷰 조회
     @GetMapping("/{hotelName}")
     public ResponseEntity<List<ReviewVo>> getReviews(@PathVariable int hotelName) {
