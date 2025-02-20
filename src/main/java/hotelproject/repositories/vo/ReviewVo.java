@@ -13,5 +13,5 @@ public class ReviewVo {
     private String reviewText; // 리뷰 내용
     private int rating; // 별점 (1~5)
     private Date createdAt; // 생성 날짜
-    private int AverageRating; // 평점
+    private int AverageRating; // 평균별점
 }
