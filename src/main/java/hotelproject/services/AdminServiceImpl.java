@@ -6,12 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hotelproject.mappers.ReviewMapper;
 import hotelproject.mappers.UserMapper;
+import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.repositories.vo.UserVo;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
+	@Autowired
+	private ReviewMapper reviewMapper;
+	
 	 @Autowired
 	    private UserMapper userMapper;
 
@@ -47,5 +52,30 @@ public class AdminServiceImpl implements AdminService {
 	    @Transactional
 	    public boolean updateUserGrade(int id, int grade) {
 	        return userMapper.updateUserGrade(id, grade) > 0;
+	    }
+	    
+	    // 모든 리뷰 조회 (관리자용)
+	    @Override
+	    public List<ReviewVo> getAllReviews() {
+	        return reviewMapper.getAllReviews();
+	    }
+
+	    // 특정 유저의 리뷰 조회 (관리자용)
+	    @Override
+	    public List<ReviewVo> getReviewsByUser(int userNo) {
+	        return reviewMapper.getReviewsByUser(userNo);
+	    }
+
+	    // 특정 호텔의 리뷰 조회 (관리자용)
+	    @Override
+	    public List<ReviewVo> getReviewsByHotel(int hotelNo) {
+	        return reviewMapper.getReviewsByHotel(hotelNo);
+	    }
+
+	    // 관리자 리뷰 삭제
+	    @Override
+	    @Transactional
+	    public boolean deleteReviewByAdmin(int reviewNo) {
+	        return reviewMapper.deleteReviewByAdmin(reviewNo) > 0;
 	    }
 }

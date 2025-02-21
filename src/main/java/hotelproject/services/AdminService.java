@@ -2,6 +2,7 @@ package hotelproject.services;
 
 import java.util.List;
 
+import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.repositories.vo.UserVo;
 
 public interface AdminService {
@@ -19,4 +20,16 @@ public interface AdminService {
 
     // 유저 등급 변경
     boolean updateUserGrade(int id, int grade);
+    
+    // 모든 리뷰 조회 (관리자용)
+    List<ReviewVo> getAllReviews();
+
+    // 특정 유저의 리뷰 조회 (관리자용)
+    List<ReviewVo> getReviewsByUser(int userNo);
+
+    // 특정 호텔의 리뷰 조회 (관리자용)
+    List<ReviewVo> getReviewsByHotel(int hotelNo);
+
+    // 관리자 리뷰 삭제
+    boolean deleteReviewByAdmin(int reviewNo);
 }

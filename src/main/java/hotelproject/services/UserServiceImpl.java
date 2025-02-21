@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hotelproject.mappers.PointMapper;
+import hotelproject.mappers.ReviewMapper;
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.PointVo;
+import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.repositories.vo.UserVo;
 import jakarta.servlet.http.HttpSession;
 
@@ -23,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
 	    @Autowired
 	    private HttpSession session;
+	    
+	    @Autowired
+	    private ReviewMapper reviewMapper;
 
 	    // 회원가입 (회원가입 시 포인트 1000 지급, 추천인 있을 경우 추천인에게 3000 지급)
 	    @Override
@@ -117,5 +122,11 @@ public class UserServiceImpl implements UserService {
 	    @Override
 	    public boolean isPhoneDuplicate(String phone) {
 	        return userMapper.checkDuplicatePhone(phone) > 0;
+	    }
+	    
+	 // 유저가 작성한 리뷰 조회
+	    @Override
+	    public List<ReviewVo> getUserReviews(int userNo) {
+	        return reviewMapper.getReviewsByUser(userNo);
 	    }
 }

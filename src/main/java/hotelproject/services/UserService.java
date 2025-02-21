@@ -2,6 +2,7 @@ package hotelproject.services;
 import java.util.List;
 
 import hotelproject.repositories.vo.PointVo;
+import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.repositories.vo.UserVo;
 
 public interface UserService {
@@ -34,4 +35,7 @@ public interface UserService {
 
     // 전화번호 중복 체크
     boolean isPhoneDuplicate(String phone);
+    
+ // 유저가 작성한 리뷰 조회 (ReviewService와 연동)
+    List<ReviewVo> getUserReviews(int userNo);
 }
