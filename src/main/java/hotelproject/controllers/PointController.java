@@ -54,4 +54,6 @@ public class PointController {
 	        }
 	        return pointService.getUserTotalPoints(userNo);
 	    }
+	    
+	}
 }
