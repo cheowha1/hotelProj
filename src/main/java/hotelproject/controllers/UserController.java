@@ -1,5 +1,6 @@
 package hotelproject.controllers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +32,23 @@ public class UserController {
     
     // 로그인 엔드포인트
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserVo loginVo, HttpSession session) {
-        UserVo foundUser = userService.authenticateUser(loginVo);
-        if (foundUser == null) {
-            return ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다.");
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password, HttpSession session) {
+        UserVo user = userService.authenticateUser(email, password);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        //  세션에 사용자 정보 저장
-        session.setAttribute("loggedInUser", foundUser);
+        // ✅ 로그인 성공 시 세션에 사용자 정보 저장
+        session.setAttribute("loggedInUser", user);
 
-        return ResponseEntity.ok("로그인 성공");
+        // ✅ 사용자 정보 반환 (닉네임, 등급, 포인트 포함)
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "로그인에 성공했습니다.");
+        response.put("nickname", user.getNickname());
+        response.put("grade", user.getGrade());
+        response.put("point", user.getPoint());
+
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/logout")
@@ -65,18 +73,11 @@ public class UserController {
     // 포인트 사용 내역 조회 API
     @GetMapping("/{userNo}/point-history")
     public ResponseEntity<?> getUserPointHistory(@PathVariable int userNo) {
-        Map<String, Object> history = userService.getUserPointHistory(userNo);
+    	List<Map<String, Object>> pointHistory = userService.getUserPointHistory(userNo);
         if (history == null || history.isEmpty()) {
             return ResponseEntity.badRequest().body("포인트 내역이 없습니다.");
         }
-        return ResponseEntity.ok(history);
-    }
-
-    // 결제 시 포인트 적립 API
-    @PostMapping("/{userNo}/earn-points")
-    public ResponseEntity<String> addPointsAfterPayment(@PathVariable int userNo, @RequestParam int amount) {
-        userService.addPointsAfterPayment(userNo, amount);
-        return ResponseEntity.ok("포인트가 적립되었습니다.");
+        return ResponseEntity.ok(pointHistory);
     }
 
     // 마이페이지에서 포인트 충전 API

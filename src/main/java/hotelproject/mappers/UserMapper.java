@@ -18,6 +18,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user")
     List<UserVo> selectAllUsers();
     
+    @Select("SELECT * FROM users WHERE email = #{email}")
+    UserVo findByEmail(String email);
+    
     // 회원 등급 변경
     @Update("UPDATE user SET grade = #{grade} WHERE user_no = #{userId}")
     void updateUserGrade(@Param("userId") int userId, @Param("grade") String grade);
@@ -33,9 +36,6 @@ public interface UserMapper {
     // 현재 기본 포인트 값 조회
     @Select("SELECT default_point FROM system_settings WHERE setting_id = 1")
     int getDefaultPoint();
-
-    // 이메일로 사용자 조회
-    UserVo findByEmail(@Param("email") String email);
     
     // 중복 체크: 이메일
     int existsByEmail(@Param("email") String email);

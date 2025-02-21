@@ -31,6 +31,7 @@ public interface UserService {
     // 회원 포인트 사용내역 조회
     List<Map<String, Object>> getUserPointHistory(int UserNo);
  
+    UserVo authenticateUser(String email, String password);
     
     // 포인트 적립
     void earnPoints(int UserNo, int amount);
@@ -41,5 +42,6 @@ public interface UserService {
     // 포인트 충전
     void chargePoint(String userId, int amount);
 
+    UserVo getUserByEmail(String email);
     
 }

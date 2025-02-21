@@ -4,13 +4,15 @@ import java.util.List;
 import hotelproject.repositories.vo.ReservationVo;
 
 public interface ReservationService {
-    int insertReservation(ReservationVo reservation);	//	예약등록(추가)
-    ReservationVo getReservationById(int reservationNo);	//	예약 상세조회
-    List<ReservationVo> getAllReservations();	//	예약 목록조회
-    int updateReservation(ReservationVo reservation);	//	예약수정
-    int deleteReservation(int reservationNo);	//	예약취소
-    List<ReservationVo> getUserReservations(String email); // 예약 내역 조회
-    boolean usePointForReservationPoints(int userNo, int amount);	//	예약 시 포인트 사용
-    void earnPointsFromReservation(int userNo, int amount);	//	예약 완료 후 포인트 적립
-    void refundPointsForCanceledReservation(int UserNo, int amount);	//	예약 취소 시 포인트 반환
+    // 유저가 포인트를 사용하여 호텔 예약
+    boolean reserveHotelWithPoints(int userNo, int hotelNo, int amount);
+
+    // 유저의 호텔 예약 목록 조회
+    List<ReservationVo> getUserReservations(int userNo);
+
+    // 유저의 호텔 예약 내역 조회 (히스토리)
+    List<ReservationVo> getReservationHistory(int userNo);
+
+    // 유저가 호텔 예약 취소 (포인트 환불 포함)
+    boolean cancelReservation(int reservationNo, int userNo, int amount);
 }

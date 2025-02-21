@@ -9,9 +9,16 @@ public class UserVo {
     private String phone;
     private String grade;      // 기본 등급 (예: "일반")
     private String name;
+    private int point;
+
     
     // 기본 생성자
-    public UserVo() {}
+    public UserVo(String email, String password, String nickname, int point) {
+    	this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.point = point;
+    }
     
     // Getter & Setter
     public Long getId() {
@@ -62,5 +69,7 @@ public class UserVo {
     public void setName(String name) {
         this.name = name;
     }
+    public int getPoint() { return point; }
+    public void setPoint(int point) { this.point = point; }
 
 }

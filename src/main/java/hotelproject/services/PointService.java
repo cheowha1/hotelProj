@@ -5,9 +5,12 @@ import java.util.List;
 import hotelproject.repositories.vo.PointVo;
 
 public interface PointService {
-	void earnPoints(int userNo, int amount);	//	포인트 적립 (회원번호 , 포인트금액)
-	boolean usePoints(int userNo, int amount);	//	포인트 사용기능(가지고 있는 포인트만큼)
-	int getUserTotalPoints(int userNo);			//	총포인트 초회
-	List<PointVo> getUserPointHistory(int userNo);	//	포인트 내역조회
+    // 포인트 사용하여 호텔 예약
+    boolean usePointsForReservation(int userNo, int amount);
 
+    // 포인트 사용 내역 조회 (히스토리)
+    List<PointVo> getPointHistory(int userNo);
+
+    // 현재 유저의 포인트 조회
+    int getUserTotalPoints(int userNo);
 }

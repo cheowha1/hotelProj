@@ -13,20 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper 
 public interface HotelMapper {
 
-    // 1. 호텔 등록
-    @Insert("INSERT INTO hotel (name, location, district, email, phone, max_room) " +
-            "VALUES (#{name}, #{location}, #{district}, #{email}, #{phone}, #{maxRoom})")
-    void insertHotel(HotelVo hotel);
-
-    // 2. 호텔 정보 수정
-    @Update("UPDATE hotel SET name=#{name}, location=#{location}, district=#{district}, " +
-            "email=#{email}, phone=#{phone}, max_room=#{maxRoom} WHERE no=#{no}")
-    void updateHotel(HotelVo hotel);
-
-    // 3. 호텔 삭제
-    @Delete("DELETE FROM hotel WHERE no=#{no}")
-    void deleteHotel(int no);
-
     // 4. 특정 호텔 조회
     @Select("SELECT * FROM hotel WHERE no=#{no}")
     HotelVo findHotelById(int no); 
