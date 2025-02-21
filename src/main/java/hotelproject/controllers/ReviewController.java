@@ -1,68 +1,82 @@
 package hotelproject.controllers;
 
-import hotelproject.services.ReviewService;
-import hotelproject.repositories.vo.ReviewVo;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import hotelproject.repositories.vo.ReviewVo;
+import hotelproject.services.ReviewService;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
+	 @Autowired
+	    private ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
+	    // 리뷰 추가
+	    @PostMapping("/add")
+	    public String addReview(@RequestBody ReviewVo review, HttpSession session) {
+	        Integer userNo = (Integer) session.getAttribute("userNo");
+	        if (userNo == null) {
+	            return "로그인이 필요합니다.";
+	        }
+	        review.setUserNo(userNo);
+	        boolean success = reviewService.addReview(review);
+	        return success ? "리뷰 작성 성공" : "리뷰 작성 실패";
+	    }
 
-    // 리뷰 등록
-    @PostMapping
-    public ResponseEntity<String> addReview(@RequestBody ReviewVo review) {
-        reviewService.insertReview(review);
-        return ResponseEntity.ok("리뷰가 등록되었습니다.");
-    }
-    
-    // 별점 등록
-    @PostMapping("/{hotelName}/rating")
-    public ResponseEntity<String> insertRating(
-    	   @PathVariable int hotelName,
-    	   @RequestParam Long userId,
-    	   @RequestParam int rating) {
-    	reviewService.insertRating(hotelName, userId, rating);
-    	return ResponseEntity.ok("별점이 등록되었습니다.");
-    }
-    
-    // 호텔의 리뷰 조회
-    @GetMapping("/{hotelName}")
-    public ResponseEntity<List<ReviewVo>> getReviews(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getReviews(hotelName));
-    }
+	    // 특정 호텔의 리뷰 조회
+	    @GetMapping("/hotel/{hotelNo}")
+	    public List<ReviewVo> getReviewsByHotel(@PathVariable int hotelNo) {
+	        return reviewService.getReviewsByHotel(hotelNo);
+	    }
 
-    // 호텔의 평균 평점 조회
-    @GetMapping("/{hotelName}/rating")
-    public ResponseEntity<Double> getAverageRating(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getAverageRating(hotelName));
-    }
+	    // 특정 유저의 리뷰 조회
+	    @GetMapping("/user")
+	    public List<ReviewVo> getReviewsByUser(HttpSession session) {
+	        Integer userNo = (Integer) session.getAttribute("userNo");
+	        if (userNo == null) {
+	            return null;
+	        }
+	        return reviewService.getReviewsByUser(userNo);
+	    }
 
-    // 호텔의 별점 문자열 반환
-    @GetMapping("/{hotelName}/stars")
-    public ResponseEntity<String> getStarRating(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getStarRating(hotelName));
-    }
+	    // 리뷰 수정
+	    @PutMapping("/update/{reviewNo}")
+	    public String updateReview(@PathVariable int reviewNo, @RequestBody ReviewVo review, HttpSession session) {
+	        Integer userNo = (Integer) session.getAttribute("userNo");
+	        if (userNo == null) {
+	            return "로그인이 필요합니다.";
+	        }
+	        boolean success = reviewService.updateReview(reviewNo, userNo, review.getComment(), review.getRating());
+	        return success ? "리뷰 수정 성공" : "리뷰 수정 실패";
+	    }
 
-    // 리뷰 수정
-    @PutMapping
-    public ResponseEntity<String> updateReview(@RequestBody ReviewVo review) {
-        reviewService.updateReview(review);
-        return ResponseEntity.ok("리뷰가 수정되었습니다.");
-    }
+	    // 유저가 자신의 리뷰 삭제
+	    @DeleteMapping("/delete/{reviewNo}")
+	    public String deleteReviewByUser(@PathVariable int reviewNo, HttpSession session) {
+	        Integer userNo = (Integer) session.getAttribute("userNo");
+	        if (userNo == null) {
+	            return "로그인이 필요합니다.";
+	        }
+	        boolean success = reviewService.deleteReviewByUser(reviewNo, userNo);
+	        return success ? "리뷰 삭제 성공" : "리뷰 삭제 실패";
+	    }
 
-    // 리뷰 삭제
-    @DeleteMapping
-    public ResponseEntity<String> deleteReview(@RequestBody ReviewVo review) {
-        reviewService.deleteReview(review);
-        return ResponseEntity.ok("리뷰가 삭제되었습니다.");
-    }
+	    // 어드민이 리뷰 삭제
+	    @DeleteMapping("/admin/delete/{reviewNo}")
+	    public String deleteReviewByAdmin(@PathVariable int reviewNo) {
+	        boolean success = reviewService.deleteReviewByAdmin(reviewNo);
+	        return success ? "어드민 리뷰 삭제 성공" : "어드민 리뷰 삭제 실패";
+	    }
 }

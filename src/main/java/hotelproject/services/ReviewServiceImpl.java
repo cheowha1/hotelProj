@@ -1,74 +1,75 @@
 package hotelproject.services;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import hotelproject.mappers.ReviewMapper;
 import hotelproject.repositories.vo.ReviewVo;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewMapper reviewMapper;
-    
-    // 	ReviewMapper 주입
-    public ReviewServiceImpl(ReviewMapper reviewMapper) {
-        this.reviewMapper = reviewMapper;
-    }
+	  @Autowired
+	    private ReviewMapper reviewMapper;
 
-    //	리뷰등록 
-    @Override
-    @Transactional
-    public void insertReview(ReviewVo review) {
-        reviewMapper.insertReview(review);
-    }
-    
-    //	별점등록
- // 별점 등록 기능 추가
-    @Override
-    @Transactional
-    public void insertRating(int hotelName, Long userid, int rating) {
-        reviewMapper.insertRating(hotelName, userid, rating);
-    }
+	    // 리뷰 추가
+	    @Override
+	    @Transactional
+	    public boolean addReview(ReviewVo review) {
+	        boolean success = reviewMapper.addReview(review) > 0;
+	        if (success) {
+	            reviewMapper.updateHotelRating(review.getHotelNo()); // 별점 평균 업데이트
+	        }
+	        return success;
+	    }
 
-    //	리뷰목록 조회
-    @Override
-    public List<ReviewVo> getReviews(int hotelName) {
-        return reviewMapper.getReviewsByHotel(hotelName);
-    }
+	    // 특정 호텔의 리뷰 목록 조회
+	    @Override
+	    public List<ReviewVo> getReviewsByHotel(int hotelNo) {
+	        return reviewMapper.getReviewsByHotel(hotelNo);
+	    }
 
-    //	리뷰 평균별점 조회
-    @Override
-    public double getAverageRating(int hotelName) {
-        Double average = reviewMapper.getAverageRating(hotelName);
-        return average != null ? average : 0.0;
-    }
+	    // 특정 유저의 리뷰 목록 조회
+	    @Override
+	    public List<ReviewVo> getReviewsByUser(int userNo) {
+	        return reviewMapper.getReviewsByUser(userNo);
+	    }
 
-    //	리뷰 수정
-    @Override
-    public void updateReview(ReviewVo review) {
-        reviewMapper.updateReview(review);
-    }
+	    // 리뷰 수정
+	    @Override
+	    @Transactional
+	    public boolean updateReview(int reviewNo, int userNo, String comment, int rating) {
+	        boolean success = reviewMapper.updateReview(new ReviewVo(reviewNo, userNo, comment, rating)) > 0;
+	        if (success) {
+	            ReviewVo review = reviewMapper.getReviewById(reviewNo);
+	            reviewMapper.updateHotelRating(review.getHotelNo()); // 별점 평균 업데이트
+	        }
+	        return success;
+	    }
 
-    //	리뷰 삭제
-    @Override
-    public void deleteReview(ReviewVo review) {
-        reviewMapper.deleteReview(review);
-    }
+	    // 유저가 자신의 리뷰 삭제
+	    @Override
+	    @Transactional
+	    public boolean deleteReviewByUser(int reviewNo, int userNo) {
+	        ReviewVo review = reviewMapper.getReviewById(reviewNo);
+	        boolean success = reviewMapper.deleteReviewByUser(reviewNo, userNo) > 0;
+	        if (success) {
+	            reviewMapper.updateHotelRating(review.getHotelNo()); // 별점 평균 업데이트
+	        }
+	        return success;
+	    }
 
-    /**
-     * 별점 등급을 계산하여 반환하는 메서드
-     */
-    @Override
-    public String getStarRating(int hotelName) {
-        double avgRating = getAverageRating(hotelName);
-        return generateStarString(avgRating);
-    }
-
-    /**
-     * 평균 별점을 "⭐⭐⭐⭐" 형태의 문자열로 변환
-     */
-    private String generateStarString(double rating) {
-        int fullStars = (int) Math.round(rating);
-        return "⭐".repeat(fullStars);
-    }
+	    // 어드민이 리뷰 삭제
+	    @Override
+	    @Transactional
+	    public boolean deleteReviewByAdmin(int reviewNo) {
+	        ReviewVo review = reviewMapper.getReviewById(reviewNo);
+	        boolean success = reviewMapper.deleteReviewByAdmin(reviewNo) > 0;
+	        if (success) {
+	            reviewMapper.updateHotelRating(review.getHotelNo()); // 별점 평균 업데이트
+	        }
+	        return success;
+	    }
 }
