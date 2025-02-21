@@ -1,66 +1,45 @@
 package hotelproject.mappers;
 
 
-import java.util.List;
-import java.util.Map;
-
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import hotelproject.repositories.vo.UserVo;
 
 @Mapper
 public interface UserMapper {
 	
-	 // 모든 회원 조회
-    @Select("SELECT * FROM user")
-    List<UserVo> selectAllUsers();
-    
-    @Select("SELECT * FROM users WHERE email = #{email}")
-    UserVo findByEmail(String email);
-    
-    // 회원 등급 변경
-    @Update("UPDATE user SET grade = #{grade} WHERE user_no = #{userId}")
-    void updateUserGrade(@Param("userId") int userId, @Param("grade") String grade);
-    
-    // 회원 포인트 업데이트 (지급/차감 공통 사용)
-    @Update("UPDATE user SET point = CASE WHEN (point + #{point}) < 0 THEN 0 ELSE (point + #{point}) END WHERE user_no = #{userId}")
-    void updateUserPoint(@Param("userId") int userId, @Param("point") int point);
+	// 회원가입 (포인트 1000 지급 포함, 추천인 설정 가능)
+    @Insert("INSERT INTO users (id, password, name, nickname, ssn, phone, address, marketing_opt_in, grade, point, role, reference) " +
+            "VALUES (#{id}, #{password}, #{name}, #{nickname}, #{ssn}, #{phone}, #{address}, #{marketingOptIn}, 1, 1000, 'USER', #{reference})")
+    @Options(useGeneratedKeys = true, keyProperty = "no")
+    boolean insertUser(UserVo user);
 
-    // 기본 포인트 업데이트
-    @Update("UPDATE system_settings SET default_point = #{defaultPoint} WHERE setting_id = 1")
-    void updateDefaultPoint(@Param("defaultPoint") int defaultPoint);
+    // 로그인 (ID(이메일)과 비밀번호로 유저 조회)
+    @Select("SELECT * FROM users WHERE id = #{id} AND password = #{password}")
+    UserVo getUserByIdAndPassword(@Param("id") String id, @Param("password") String password);
 
-    // 현재 기본 포인트 값 조회
-    @Select("SELECT default_point FROM system_settings WHERE setting_id = 1")
-    int getDefaultPoint();
-    
-    // 중복 체크: 이메일
-    int existsByEmail(@Param("email") String email);
-    
-    // 중복 체크: 닉네임
-    int existsByNickname(@Param("nickname") String nickname);
-    
-    // 중복 체크: 주민번호
-    int existsBySsn(@Param("ssn") String ssn);
-    
-    // 중복 체크: 전화번호
-    int existsByPhone(@Param("phone") String phone);
-    
-    // 회원 저장
-    int saveUser(UserVo userVo);
-    
-//    <포인트 기능 추가>
-    // 회원의 포인트 사용내역 조회
-   List<Map<String, Object>> getUserPointHistory(int userNo);
-   void chargePoint(@Param("userNo") int userNo, @Param("amount") int amount);
+    // 유저 정보 조회
+    @Select("SELECT * FROM users WHERE no = #{userNo}")
+    UserVo getUserByNo(@Param("userNo") int userNo);
 
-   // 포인트 적립 (+= 연산)
-   void earnPoints(@Param("userNo") int userNo, @Param("amount") int amount);
+    // ID(이메일) 중복 체크
+    @Select("SELECT COUNT(*) FROM users WHERE id = #{id}")
+    int checkDuplicateId(@Param("id") String id);
 
-    // 포인트 사용(=결제) (-= 연산, 포인트 부족 시 업데이트 안 함)
-   int usePoints(@Param("userNo") int userNo, @Param("amount") int amount);
+    // 닉네임 중복 체크
+    @Select("SELECT COUNT(*) FROM users WHERE nickname = #{nickname}")
+    int checkDuplicateNickname(@Param("nickname") String nickname);
+
+    // 주민번호 중복 체크
+    @Select("SELECT COUNT(*) FROM users WHERE ssn = #{ssn}")
+    int checkDuplicateSsn(@Param("ssn") String ssn);
+
+    // 전화번호 중복 체크
+    @Select("SELECT COUNT(*) FROM users WHERE phone = #{phone}")
+    int checkDuplicatePhone(@Param("phone") String phone);
  
 }
