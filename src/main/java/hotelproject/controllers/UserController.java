@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hotelproject.repositories.vo.PointVo;
-import hotelproject.repositories.vo.ReservationVo;
 import hotelproject.repositories.vo.ReviewVo;
 import hotelproject.repositories.vo.UserVo;
 import hotelproject.services.UserService;
@@ -88,37 +87,5 @@ public class UserController {
         return userService.getUserReviews(userNo);
     }
     
-    // 로그인한 유저의 모든 데이터 조회 (유저 정보 + 포인트 내역 + 리뷰 + 예약 내역)
-    @GetMapping("/dashboard")
-    public UserDashboardResponse getUserDashboard(HttpSession session) {
-        Integer userNo = (Integer) session.getAttribute("userNo");
-        if (userNo == null) {
-            return null;
-        }
-        UserVo user = userService.getUserInfo(userNo);
-        List<PointVo> points = userService.getUserPointHistory(userNo);
-        List<ReviewVo> reviews = userService.getUserReviews(userNo);
-        List<ReservationVo> reservations = userService.getUserReservations(userNo);
-        return new UserDashboardResponse(user, points, reviews, reservations);
-    }
-
-    // 내부 DTO 클래스 (유저 대시보드 데이터 반환용)
-    public static class UserDashboardResponse {
-        private UserVo user;
-        private List<PointVo> points;
-        private List<ReviewVo> reviews;
-        private List<ReservationVo> reservations;
-
-        public UserDashboardResponse(UserVo user, List<PointVo> points, List<ReviewVo> reviews, List<ReservationVo> reservations) {
-            this.user = user;
-            this.points = points;
-            this.reviews = reviews;
-            this.reservations = reservations;
-        }
-
-        public UserVo getUser() { return user; }
-        public List<PointVo> getPoints() { return points; }
-        public List<ReviewVo> getReviews() { return reviews; }
-        public List<ReservationVo> getReservations() { return reservations; }
-    }
+ 
 }
