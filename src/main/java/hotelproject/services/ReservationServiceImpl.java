@@ -11,11 +11,12 @@ import hotelproject.mappers.ReservationMapper;
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.PointHistoryVo;
 import hotelproject.repositories.vo.ReservationVo;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
-	 @Autowired
+		@Autowired
 	    private UserMapper userMapper;
 	    @Autowired
 	    private ReservationMapper reservationMapper;
@@ -23,7 +24,12 @@ public class ReservationServiceImpl implements ReservationService {
 	    private PointMapper pointMapper;
 
 	    @Override
-	    public boolean bookHotel(String userId, int hotelId, int cost) {
+	    public boolean bookHotel(HttpSession session, int hotelId, int cost) {
+	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
+	        if (userId == null) {
+	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	        }
+
 	        int currentPoints = userMapper.getUserPoints(userId);
 	        if (currentPoints < cost) {
 	            throw new IllegalArgumentException("포인트가 부족합니다.");
@@ -44,7 +50,12 @@ public class ReservationServiceImpl implements ReservationService {
 	    }
 
 	    @Override
-	    public boolean cancelReservation(String userId, int reservationId) {
+	    public boolean cancelReservation(HttpSession session, int reservationId) {
+	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
+	        if (userId == null) {
+	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	        }
+
 	        ReservationVo reservation = reservationMapper.getReservationById(reservationId);
 	        if (reservation == null || !reservation.getUserId().equals(userId)) {
 	            throw new IllegalArgumentException("예약을 찾을 수 없거나 권한이 없습니다.");
@@ -64,8 +75,13 @@ public class ReservationServiceImpl implements ReservationService {
 	    }
 	    
 	    @Override
-	    public List<PointHistoryVo> getPointHistory(String userId) {
-	        return pointMapper.getPointHistory(userId);
+	    public List<ReservationVo> getUserReservations(HttpSession session) {
+	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
+	        if (userId == null) {
+	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	        }
+
+	        return reservationMapper.getUserReservations(userId);
 	    }
     
 }

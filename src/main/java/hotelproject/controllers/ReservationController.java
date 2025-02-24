@@ -3,47 +3,55 @@ package hotelproject.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import hotelproject.repositories.vo.PointHistoryVo;
+import hotelproject.repositories.vo.ReservationVo;
 import hotelproject.services.ReservationService;
 import jakarta.servlet.http.HttpSession;
 
-@Controller
+@RestController
 @RequestMapping("/reservation")
 public class ReservationController {
 
-	 @Autowired
-	    private ReservationService reservationService;
-
-	    @PostMapping("/book")
-	    public boolean bookHotel(@RequestParam int hotelId, @RequestParam int cost, HttpSession session) {
-	        String userId = (String) session.getAttribute("userId");
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	
+	@Autowired
+	private ReservationService reservationService;
+	
+	 @PostMapping("/book")
+	    public ResponseEntity<String> bookHotel(@RequestBody ReservationVo request, HttpSession session) {
+	        if (session.getAttribute("userId") == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 	        }
-	        return reservationService.bookHotel(userId, hotelId, cost);
+
+	        boolean success = reservationService.bookHotel(session, request.getHotelId(), request.getCost());
+	        return success ? ResponseEntity.ok("호텔 예약이 완료되었습니다.") :
+	                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body("예약 실패");
 	    }
 
 	    @PostMapping("/cancel")
-	    public boolean cancelReservation(@RequestParam int reservationId, HttpSession session) {
-	        String userId = (String) session.getAttribute("userId");
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	    public ResponseEntity<String> cancelReservation(@RequestBody ReservationVo request, HttpSession session) {
+	        if (session.getAttribute("userId") == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 	        }
-	        return reservationService.cancelReservation(userId, reservationId);
+
+	        boolean success = reservationService.cancelReservation(session, request.getReservationId());
+	        return success ? ResponseEntity.ok("예약이 취소되었습니다.") :
+	                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body("예약 취소 실패");
 	    }
-	
-	    @GetMapping("/points/history")
-	    public List<PointHistoryVo> getPointHistory(HttpSession session) {
-	        String userId = (String) session.getAttribute("userId");
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
+
+	    @GetMapping("/user")
+	    public ResponseEntity<List<ReservationVo>> getUserReservations(HttpSession session) {
+	        if (session.getAttribute("userId") == null) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	        }
-	        return reservationService.getPointHistory(userId);
+
+	        List<ReservationVo> reservations = reservationService.getUserReservations(session);
+	        return ResponseEntity.ok(reservations);
 	    }
 }
