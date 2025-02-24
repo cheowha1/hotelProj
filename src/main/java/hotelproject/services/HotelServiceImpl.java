@@ -12,19 +12,22 @@ import hotelproject.repositories.vo.HotelVo;
 @Service
 public class HotelServiceImpl implements HotelService {
 
-    @Autowired
-    private HotelMapper hotelmapper;
+	  @Autowired
+	    private HotelMapper hotelMapper;
 
-    // 특정 호텔 조회
-    @Override
-    public HotelVo findHotelById(int no) {
-        return hotelmapper.findHotelById(no);
-    }
+	    @Override
+	    public List<HotelVo> getAllHotels() {
+	        return hotelMapper.getAllHotels();
+	    }
 
+	    @Override
+	    public HotelVo getHotelDetails(int hotelNo) {
+	        return hotelMapper.getHotelDetails(hotelNo);
+	    }
 
-    // 전체 호텔 목록 조회
-    @Override
-    public List<HotelVo> getAllHotels() {
-        return hotelmapper.findAllHotels();
-    }
+	    @Override
+	    public boolean isHotelAvailable(int hotelNo) {
+	        return hotelMapper.getAvailableRooms(hotelNo) > 0;
+	    }
+  
 }

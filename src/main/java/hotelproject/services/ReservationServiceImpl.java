@@ -1,72 +1,71 @@
 package hotelproject.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import hotelproject.mappers.PointMapper;
 import hotelproject.mappers.ReservationMapper;
-import hotelproject.repositories.vo.PointVo;
+import hotelproject.mappers.UserMapper;
+import hotelproject.repositories.vo.PointHistoryVo;
 import hotelproject.repositories.vo.ReservationVo;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
 	 @Autowired
+	    private UserMapper userMapper;
+	    @Autowired
 	    private ReservationMapper reservationMapper;
-
 	    @Autowired
 	    private PointMapper pointMapper;
 
-	    // 유저가 포인트를 사용하여 호텔 예약
 	    @Override
-	    @Transactional
-	    public boolean reserveHotelWithPoints(int userNo, int hotelNo, int amount) {
-	        int currentPoints = pointMapper.getUserTotalPoints(userNo);
-	        if (currentPoints >= amount) {
-	            // 예약 추가
-	            ReservationVo reservation = new ReservationVo(userNo, hotelNo, amount);
-	            reservationMapper.insertReservation(reservation);
-	            
-	            // 포인트 차감
-	            PointVo point = new PointVo(userNo, -amount, "RESERVATION");
-	            pointMapper.insertReservationPoint(point);
-	            
-	            return true;
+	    public boolean bookHotel(String userId, int hotelId, int cost) {
+	        int currentPoints = userMapper.getUserPoints(userId);
+	        if (currentPoints < cost) {
+	            throw new IllegalArgumentException("포인트가 부족합니다.");
 	        }
-	        return false;
+	        
+	        // 포인트 차감
+	        userMapper.updateUserPoints(userId, -cost);
+	        
+	        // 예약 내역 저장
+	        ReservationVo reservation = new ReservationVo(userId, hotelId, cost, new Date());
+	        reservationMapper.insertReservation(reservation);
+	        
+	        // 포인트 사용 내역 저장
+	        PointHistoryVo history = new PointHistoryVo(userId, -cost, "예약", new Date());
+	        pointMapper.insertPointHistory(history);
+	        
+	        return true;
 	    }
 
-	    // 유저의 호텔 예약 목록 조회
 	    @Override
-	    public List<ReservationVo> getUserReservations(int userNo) {
-	        return reservationMapper.getUserReservations(userNo);
-	    }
-
-	    // 유저의 호텔 예약 내역 조회 (히스토리)
-	    @Override
-	    public List<ReservationVo> getReservationHistory(int userNo) {
-	        return reservationMapper.getReservationHistory(userNo);
-	    }
-
-	    // 유저가 호텔 예약 취소 (포인트 환불 포함)
-	    @Override
-	    @Transactional
-	    public boolean cancelReservation(int reservationNo, int userNo, int amount) {
-	        ReservationVo reservation = reservationMapper.getReservationById(reservationNo);
-	        if (reservation != null && reservation.getUserNo() == userNo) {
-	            // 예약 삭제
-	            reservationMapper.deleteReservation(reservationNo);
-	            
-	            // 포인트 환불
-	            PointVo point = new PointVo(userNo, amount, "CANCEL_RESERVATION");
-	            pointMapper.insertReservationPoint(point);
-	            
-	            return true;
+	    public boolean cancelReservation(String userId, int reservationId) {
+	        ReservationVo reservation = reservationMapper.getReservationById(reservationId);
+	        if (reservation == null || !reservation.getUserId().equals(userId)) {
+	            throw new IllegalArgumentException("예약을 찾을 수 없거나 권한이 없습니다.");
 	        }
-	        return false;
+	        
+	        // 포인트 환불
+	        userMapper.updateUserPoints(userId, reservation.getCost());
+	        
+	        // 예약 취소
+	        reservationMapper.deleteReservation(reservationId);
+	        
+	        // 포인트 환불 내역 저장
+	        PointHistoryVo history = new PointHistoryVo(userId, reservation.getCost(), "예약 취소", new Date());
+	        pointMapper.insertPointHistory(history);
+	        
+	        return true;
+	    }
+	    
+	    @Override
+	    public List<PointHistoryVo> getPointHistory(String userId) {
+	        return pointMapper.getPointHistory(userId);
 	    }
     
 }

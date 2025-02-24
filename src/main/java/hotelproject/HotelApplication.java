@@ -11,9 +11,4 @@ public class HotelApplication {
 		SpringApplication.run(HotelApplication.class, args);
 	}
 	
-	  @Override
-	    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-	        return application.sources(HotelApplication.class);
-	    }
-
 }

@@ -1,22 +1,60 @@
 package hotelproject.repositories.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-
 public class HotelVo {
-	private int no; //	호텔번호
-	private String name;	//	호텔이름
-	private String location;	//	호텔지역
-	private String district;		
-	private String email;	//	호텔 이메일
-	private String phone;	//	
-	private int maxRoom;	//	수용인원
 
+	 private int hotelNo;
+	    private String name;
+	    private String location;
+	    private int availableRooms;
+	    private double rating;
+
+	    public HotelVo(int hotelNo, String name, String location, int availableRooms, double rating) {
+	        this.hotelNo = hotelNo;
+	        this.name = name;
+	        this.location = location;
+	        this.availableRooms = availableRooms;
+	        this.rating = rating;
+	    }
+
+		public int getHotelNo() {
+			return hotelNo;
+		}
+
+		public void setHotelNo(int hotelNo) {
+			this.hotelNo = hotelNo;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getLocation() {
+			return location;
+		}
+
+		public void setLocation(String location) {
+			this.location = location;
+		}
+
+		public int getAvailableRooms() {
+			return availableRooms;
+		}
+
+		public void setAvailableRooms(int availableRooms) {
+			this.availableRooms = availableRooms;
+		}
+
+		public double getRating() {
+			return rating;
+		}
+
+		public void setRating(double rating) {
+			this.rating = rating;
+		}
+	    
+	    
 }
