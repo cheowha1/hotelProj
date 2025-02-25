@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="hotelproject.mappers.CustomerSupportBoardMapper">
+
+    <!-- 고객센터 게시글 작성 -->
+    <insert id="insertBoard">
+        INSERT INTO board (user_id, title, content, created_at, updated_at)
+        VALUES (#{userId}, #{title}, #{content}, NOW(), NOW());
+    </insert>
+
+    <!-- 관리자 댓글 작성 -->
+    <insert id="insertReply">
+        INSERT INTO board (board_id, user_id, content, created_at, updated_at)
+        VALUES (#{boardId}, #{userId}, #{content}, NOW(), NOW());
+    </insert>
+
+    <!-- 모든 게시글 및 댓글 조회 -->
+    <select id="getAllBoards" resultMap="BoardResultMap">
+        SELECT id, board_id, user_id, title, content, created_at, updated_at
+        FROM board
+        ORDER BY created_at DESC;
+    </select>
+
+    <!-- Result Map -->
+    <resultMap id="BoardResultMap" type="hotelproject.repositories.vo.CustomerSupportBoardVo">
+        <id property="id" column="id"/>
+        <result property="boardId" column="board_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+</mapper>
