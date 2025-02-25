@@ -11,30 +11,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 	
-	 @Bean
-	    public PasswordEncoder passwordEncoder() {
-	        return new BCryptPasswordEncoder();
-	    }
+	@Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	  @Bean
-	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	        http
-	            .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
-	            .authorizeHttpRequests(auth -> auth
-	                .requestMatchers("/users/login", "/users/register").permitAll() // 로그인 & 회원가입은 인증 없이 접근 가능
-	                .requestMatchers("/admin/**").hasRole("ADMIN") // 어드민 페이지는 ADMIN 권한 필요
-	                .anyRequest().authenticated() // 나머지 요청은 로그인 필요
-	            )
-	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // 세션 관리 설정
-	            .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
-	            .logout(logout -> logout
-	                .logoutUrl("/users/logout")
-	                .logoutSuccessHandler((request, response, authentication) -> {
-	                    request.getSession().invalidate();
-	                    response.setStatus(200);
-	                })
-	            );
+  @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/admin/**").hasRole("ADMIN") // 어드민 페이지는 ADMIN 권한 필요
+                .anyRequest().permitAll() // 나머지는 로그인 없이 접근 가능
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // 세션 관리 설정
+            .formLogin(form -> form.disable()) // 기본 로그인 폼 비활성화
+            .logout(logout -> logout
+                .logoutUrl("/users/logout")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    request.getSession().invalidate();
+                    response.setStatus(200);
+                })
+            );
 
-	        return http.build();
-	    }
+        return http.build();
+    }
 }
