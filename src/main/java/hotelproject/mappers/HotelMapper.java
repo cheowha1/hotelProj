@@ -15,7 +15,7 @@ public interface HotelMapper {
     HotelVo getHotelDetails(@Param("hotelNo") int hotelNo);
     int getAvailableRooms(@Param("hotelNo") int hotelNo);
     void updateHotelRating(@Param("hotelNo") int hotelNo, @Param("rating") Double rating);
-    @Select("SELECT * FROM hotel")  // XML 대신 직접 SQL 실행 가능 (XML 사용하면 삭제 가능)
+    @Select("SELECT hotelNo, name, location, phone, availableRooms, rating FROM hotel") 
     List<HotelVo> getAllHotels();
     
 }

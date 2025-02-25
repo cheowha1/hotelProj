@@ -5,13 +5,15 @@ public class HotelVo {
 	 private int hotelNo;
 	    private String name;
 	    private String location;
+	    private String phone;
 	    private int availableRooms;
 	    private double rating;
 
-	    public HotelVo(int hotelNo, String name, String location, int availableRooms, double rating) {
+	    public HotelVo(int hotelNo, String name, String location, String phone, int availableRooms, double rating) {
 	        this.hotelNo = hotelNo;
 	        this.name = name;
 	        this.location = location;
+	        this.phone = phone; 
 	        this.availableRooms = availableRooms;
 	        this.rating = rating;
 	    }
@@ -38,6 +40,14 @@ public class HotelVo {
 
 		public void setLocation(String location) {
 			this.location = location;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
 		}
 
 		public int getAvailableRooms() {
