@@ -1,31 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
 <mapper namespace="hotelproject.mappers.HotelMapper">
 
-  
-    <!-- 호텔 목록 조회 -->
-    <select id="getAllHotels" resultType="hotelproject.repositories.vo.HotelVo">
-        SELECT * FROM hotels
+    <insert id="insertHotel">
+        INSERT INTO hotel (name, location, rating, price)
+        VALUES (#{name}, #{location}, #{rating}, #{price});
+    </insert>
+
+    <select id="getHotelById" resultType="hotelproject.repositories.vo.HotelVo">
+        SELECT * FROM hotel WHERE id = #{id};
     </select>
-
-    <!-- 특정 호텔 조회 -->
-    <select id="getHotelById" parameterType="int" resultType="hotelproject.repositories.vo.HotelVo">
-        SELECT * FROM hotels WHERE hotel_no = #{hotelNo}
-    </select>
-
-    <!-- 호텔 예약 가능 여부 확인 -->
-    <select id="checkHotelAvailability" parameterType="int" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM hotels WHERE hotel_no = #{hotelNo} AND available_rooms > 0
-    </select>
-
-    <!-- 호텔 예약 시 객실 수 감소 -->
-    <update id="decreaseAvailableRooms" parameterType="int">
-        UPDATE hotels SET available_rooms = available_rooms - 1 WHERE hotel_no = #{hotelNo} AND available_rooms > 0
-    </update>
-
-    <!-- 호텔 예약 취소 시 객실 수 증가 -->
-    <update id="increaseAvailableRooms" parameterType="int">
-        UPDATE hotels SET available_rooms = available_rooms + 1 WHERE hotel_no = #{hotelNo}
+    
+  <select id="getAllHotels" resultType="hotelproject.repositories.vo.HotelVo">
+    SELECT 
+        no AS hotelNo, 
+        name, 
+        location, 
+        max_room AS availableRooms, 
+        rating
+    FROM hotel;
+</select>
+	
+    <update id="updateHotelRating">
+        UPDATE hotel SET rating = #{rating} WHERE id = #{id};
     </update>
 
 </mapper>

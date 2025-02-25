@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="hotelproject.mappers.AdminMapper">
+
+    <insert id="insertAdminUser">
+        INSERT INTO admins (username, password, role, created_at)
+        VALUES (#{username}, #{password}, #{role}, NOW());
+    </insert>
+
+    <select id="getAdminByUsername" resultType="hotelproject.repositories.vo.AdminVo">
+        SELECT * FROM admins WHERE username = #{username};
+    </select>
+
+    <update id="updateAdminRole">
+        UPDATE admins SET role = #{role} WHERE id = #{id};
+    </update>
+
+</mapper>

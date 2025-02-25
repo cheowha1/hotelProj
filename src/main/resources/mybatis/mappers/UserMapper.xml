@@ -1,51 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+    
 <mapper namespace="hotelproject.mappers.UserMapper">
 
-     <!-- 회원가입 (포인트 1000 지급 포함, 추천인 설정 가능) -->
-    <insert id="insertUser" parameterType="hotelproject.repositories.vo.UserVo" useGeneratedKeys="true" keyProperty="no">
-        INSERT INTO users (id, password, name, nickname, ssn, phone, address, marketing_opt_in, grade, point, role, reference)
-        VALUES (#{id}, #{password}, #{name}, #{nickname}, #{ssn}, #{phone}, #{address}, #{marketingOptIn}, 1, 1000, 'USER', #{reference})
+    <insert id="insertUser">
+        INSERT INTO users (id, password, name, nickname, phone, address, marketing_opt_in)
+        VALUES (#{id}, #{password}, #{name}, #{nickname}, #{phone}, #{address}, #{marketingOptIn})
     </insert>
 
-    <!-- 로그인 (ID(이메일)과 비밀번호로 유저 조회) -->
-    <select id="getUserByIdAndPassword" parameterType="map" resultType="hotelproject.repositories.vo.UserVo">
-        SELECT * FROM users WHERE id = #{id} AND password = #{password}
+    <select id="getUserById" resultType="hotelproject.repositories.vo.UserVo">
+        SELECT * FROM users WHERE id = #{id}
     </select>
 
-    <!-- 유저 정보 조회 -->
-    <select id="getUserByNo" parameterType="int" resultType="hotelproject.repositories.vo.UserVo">
-        SELECT * FROM users WHERE no = #{userNo}
-    </select>
-
-    <!-- 중복 체크 -->
-    <select id="checkDuplicateId" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users WHERE id = #{id}
-    </select>
-    
-    <select id="checkDuplicateNickname" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users WHERE nickname = #{nickname}
-    </select>
-    
-    <select id="checkDuplicateSsn" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users WHERE ssn = #{ssn}
-    </select>
-    
-    <select id="checkDuplicatePhone" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM users WHERE phone = #{phone}
-    </select>
-
-    <!-- 유저 포인트 업데이트 -->
-    <update id="updateUserPoints" parameterType="map">
-        UPDATE users SET point = point + #{amount} WHERE no = #{userNo}
+    <update id="updateUserPoints">
+        UPDATE users SET point = point + #{points} WHERE id = #{id}
     </update>
 
-    <!-- 유저 등급 변경 -->
-    <update id="updateUserGrade" parameterType="map">
-        UPDATE users SET grade = #{grade} WHERE no = #{userNo}
-    </update>
-   
 </mapper>
