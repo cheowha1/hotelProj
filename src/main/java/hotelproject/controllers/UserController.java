@@ -12,7 +12,7 @@ import hotelproject.services.UserService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 	
 	  @Autowired
