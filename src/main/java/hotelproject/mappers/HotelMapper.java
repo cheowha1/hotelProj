@@ -12,10 +12,12 @@ import hotelproject.repositories.vo.HotelVo;
 public interface HotelMapper {
 
 //	List<HotelVo> getAllHotels();
-    HotelVo getHotelDetails(@Param("hotelNo") int hotelNo);
+    HotelVo getHotelDetails(@Param("hotelId") int hotelId);
     int getAvailableRooms(@Param("hotelNo") int hotelNo);
     void updateHotelRating(@Param("hotelNo") int hotelNo, @Param("rating") Double rating);
     @Select("SELECT id, name, location, phone, max_room AS availableRooms, rating FROM hotel")
     List<HotelVo> getAllHotels();
+    @Select("SELECT id, name, location, phone, max_room AS availableRooms, rating FROM hotel WHERE id = #{hotelId}")
+    HotelVo getHotelById(@Param("hotelId") int hotelId);
     
 }

@@ -8,7 +8,7 @@ public interface HotelService {
  
 
 	 List<HotelVo> getAllHotels();
-	 HotelVo getHotelDetails(int hotelNo);
+	 HotelVo getHotelById(int hotelId);
 	 boolean isHotelAvailable(int hotelNo);
 }
 

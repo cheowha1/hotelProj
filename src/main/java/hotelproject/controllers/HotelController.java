@@ -23,9 +23,10 @@ public class HotelController {
 	        return hotelService.getAllHotels();
 	    }
 
-	    @GetMapping("/details/{hotelNo}")
-	    public HotelVo getHotelDetails(@PathVariable int hotelNo) {
-	        return hotelService.getHotelDetails(hotelNo);
+	 
+	    @GetMapping("/{hotelId}")
+	    public HotelVo getHotelById(@PathVariable int hotelId) {
+	        return hotelService.getHotelById(hotelId);
 	    }
 
 	    @GetMapping("/availability/{hotelNo}")

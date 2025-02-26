@@ -21,8 +21,8 @@ public class HotelServiceImpl implements HotelService {
 	    }
 
 	    @Override
-	    public HotelVo getHotelDetails(int hotelNo) {
-	        return hotelMapper.getHotelDetails(hotelNo);
+	    public HotelVo getHotelById(int hotelId) {
+	        return hotelMapper.getHotelById(hotelId);
 	    }
 
 	    @Override
