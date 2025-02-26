@@ -4,10 +4,10 @@
     
 <mapper namespace="hotelproject.mappers.UserMapper">
 
-    <insert id="insertUser">
-        INSERT INTO users (id, password, name, nickname, phone, address, marketing_opt_in)
-        VALUES (#{id}, #{password}, #{name}, #{nickname}, #{phone}, #{address}, #{marketingOptIn})
-    </insert>
+    <insert id="insertUser" parameterType="hotelproject.repositories.vo.UserVo">
+   		 INSERT INTO users (id, password, name, nickname, ssn, phone, reference, grade, point, role)
+   		 VALUES (#{id}, #{password}, #{name}, #{nickname}, #{ssn}, #{phone}, #{reference}, #{grade}, #{point}, #{role})
+	</insert>
 
     <select id="getUserById" resultType="hotelproject.repositories.vo.UserVo">
         SELECT * FROM users WHERE id = #{id}
@@ -16,5 +16,31 @@
     <update id="updateUserPoints">
         UPDATE users SET point = point + #{points} WHERE id = #{id}
     </update>
+
+	<select id="checkDuplicateId" resultType="int" parameterType="string">
+    SELECT COUNT(*) FROM users WHERE id = #{id}
+</select>
+
+<select id="checkDuplicateNickname" resultType="int" parameterType="string">
+    SELECT COUNT(*) FROM users WHERE nickname = #{nickname}
+</select>
+
+<select id="checkDuplicatePhone" resultType="int" parameterType="string">
+    SELECT COUNT(*) FROM users WHERE phone = #{phone}
+</select>
+
+<select id="checkDuplicateSsn" resultType="int" parameterType="string">
+    SELECT COUNT(*) FROM users WHERE ssn = #{ssn}
+</select>
+
+	
+	<select id="getUserByNickname" resultType="hotelproject.repositories.vo.UserVo">
+	    SELECT * FROM users WHERE nickname = #{nickname}
+	</select>
+	
+	<update id="updateUserPoints">
+    	UPDATE users SET point = point + #{points} WHERE id = #{id}
+	</update>
+	
 
 </mapper>
