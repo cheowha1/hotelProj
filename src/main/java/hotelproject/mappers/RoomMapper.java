@@ -17,4 +17,8 @@ public interface RoomMapper {
     // 특정 객실 정보 조회 (추가)
     @Select("SELECT id, hotel_id, room_name, room_price FROM rooms WHERE id = #{roomId}")
     RoomVo getRoomById(@Param("roomId") int roomId);
+    
+    //  특정 객실의 이미지 리스트 조회 (객실 ID 기준)
+    @Select("SELECT image_url FROM room_images WHERE room_id = #{roomId}")
+    List<String> getRoomImages(@Param("roomId") int roomId);
 }

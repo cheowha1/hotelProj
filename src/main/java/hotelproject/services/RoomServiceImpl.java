@@ -21,6 +21,10 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.getRoomsByHotelId(hotelId);
     }
 
+    @Override
+    public List<String> getRoomImages(int roomId) {
+        return roomMapper.getRoomImages(roomId);
+    }
     // 특정 객실 정보 조회
     @Override
     public RoomVo getRoomById(int roomId) {

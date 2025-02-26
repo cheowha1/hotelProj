@@ -25,6 +25,10 @@ public class RoomController {
         return roomService.getRoomsByHotelId(hotelId);
     }
 
+    @GetMapping("/{roomId}/images")
+    public List<String> getRoomImages(@PathVariable int roomId) {
+        return roomService.getRoomImages(roomId);
+    }
     // 특정 객실 정보 조회
     @GetMapping("/{roomId}")
     public RoomVo getRoomById(@PathVariable int roomId) {
