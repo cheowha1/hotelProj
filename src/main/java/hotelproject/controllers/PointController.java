@@ -1,36 +1,65 @@
 package hotelproject.controllers;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import hotelproject.repositories.vo.PointHistoryVo;
 import hotelproject.services.PointService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/points")
+@RequestMapping("/hotel/users/points")
 public class PointController {
 
-	   @Autowired
+	 @Autowired
 	    private PointService pointService;
+	 
 
-	    @PostMapping("/charge")
-	    public boolean chargePoints(@RequestParam int amount, HttpSession session) {
-	        String userId = (String) session.getAttribute("userId"); // userId 기반으로 변경
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
-	        }
-	        return pointService.chargePoints(userId, amount);
-	    }
-	    
+	 @PostMapping("/users/points/charge")
+	 public ResponseEntity<String> chargePoints(@RequestBody Map<String, Object> requestData, HttpSession session) {
+	     try {
+	         int amount = Integer.parseInt(requestData.get("amount").toString());
+	         pointService.chargePoints(amount, session);
+	         return ResponseEntity.ok("포인트 충전 완료");
+	     } catch (Exception e) {
+	         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+	     }
+	 }
+
+	    // 포인트 사용
 	    @PostMapping("/use")
-	    public boolean usePoints(@RequestParam int amount, HttpSession session) {
+	    public ResponseEntity<?> usePoints(@RequestBody int amount, HttpSession session) {
 	        String userId = (String) session.getAttribute("userId");
 	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	            return ResponseEntity.status(401).body("로그인 필요");
 	        }
-	        return pointService.usePoints(userId, amount);
+
+	        try {
+	            pointService.usePoints(userId, amount);
+	            return ResponseEntity.ok("포인트 사용 완료");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(500).body("포인트 사용 실패: " + e.getMessage());
+	        }
+	    }
+
+	    // 포인트 내역 조회
+	    @GetMapping("/history")
+	    public ResponseEntity<List<PointHistoryVo>> getPointHistory(HttpSession session) {
+	        String userId = (String) session.getAttribute("userId");
+	        if (userId == null) {
+	            return ResponseEntity.status(401).body(null); // 로그인 필요
+	        }
+
+	        List<PointHistoryVo> history = pointService.getPointHistory(userId);
+	        return ResponseEntity.ok(history);
 	    }
 }

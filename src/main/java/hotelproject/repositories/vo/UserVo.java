@@ -18,6 +18,7 @@ public class UserVo {
 	    private String grade;// 회원 등급
 	    private int point;
 	    private String role;
+	    private int totalUsedPoint;
 	    
 
 }

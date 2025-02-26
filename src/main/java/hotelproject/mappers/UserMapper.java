@@ -29,10 +29,13 @@ public interface UserMapper {
 	    int insertUser(UserVo user);
 	    UserVo getUserByNickname(@Param("nickname") String nickname);
 	    boolean updateUser(@Param("userId") int userId, @Param("user") UserVo user);
-	    @Select("SELECT id, password FROM users WHERE id = #{id}")
-	    UserVo getUserById(String id);
-	    boolean updateUserPoints(@Param("id") String id, @Param("points") int points);
+	    @Select("SELECT id, password, name, nickname, ssn, phone, grade, point FROM users WHERE id = #{id}")
+	    UserVo getUserById(@Param("id") String id);
 	    int getUserPoints(@Param("id") String id);
-	    boolean updateUserGrade(@Param("id") String id, @Param("grade") String grade);
 	    boolean updateUser(@Param("id") String id, @Param("user") UserVo user);
+	    void updateUserPoints(@Param("userId") String userId, @Param("points") int points);
+	    
+	    void insertPointHistory(@Param("userId") String userId, @Param("amount") int amount, @Param("type") String type);
+	    
+	    void updateUserGrade(@Param("userId") String userId, @Param("grade") String grade);
 }
