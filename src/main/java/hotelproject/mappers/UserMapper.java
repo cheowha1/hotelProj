@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import hotelproject.repositories.vo.UserVo;
 
@@ -28,14 +29,29 @@ public interface UserMapper {
 	    @Options(useGeneratedKeys = true, keyProperty = "no")
 	    int insertUser(UserVo user);
 	    UserVo getUserByNickname(@Param("nickname") String nickname);
-	    boolean updateUser(@Param("userId") int userId, @Param("user") UserVo user);
+	    @Update("UPDATE users SET " +
+				"password = #{password}, " +
+				"name = #{name}, " +
+				"nickname = #{nickname}, " +
+				"ssn = #{ssn}, " +
+				"phone = #{phone}" +
+				"WHERE id = #{id}")
+		boolean updateUser(@Param("id") String id,
+						   @Param("password") String password,
+						   @Param("name") String name,
+						   @Param("nickname") String nickname,
+						   @Param("ssn") String ssn,
+						   @Param("phone") String phone);
 	    @Select("SELECT id, password, name, nickname, ssn, phone, grade, point FROM users WHERE id = #{id}")
 	    UserVo getUserById(@Param("id") String id);
 	    int getUserPoints(@Param("id") String id);
 	    boolean updateUser(@Param("id") String id, @Param("user") UserVo user);
-	    void updateUserPoints(@Param("userId") String userId, @Param("points") int points);
+	    @Update("UPDATE users SET point = point + #{points} WHERE id = #{userId}")
+		void updateUserPoints(@Param("userId") String userId, @Param("points") int points);
+	    
 	    
 	    void insertPointHistory(@Param("userId") String userId, @Param("amount") int amount, @Param("type") String type);
 	    
-	    void updateUserGrade(@Param("userId") String userId, @Param("grade") String grade);
+	    @Update("UPDATE users SET grade = #{grade} WHERE id = #{userId}")
+	    boolean updateUserGrade(@Param("userId") String userId, @Param("grade") String grade);
 }

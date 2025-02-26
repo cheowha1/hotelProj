@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**").hasRole("ADMIN") // 어드민 페이지는 ADMIN 권한 필요
+//                .requestMatchers("/admin/**").hasRole("ADMIN") // 어드민 페이지는 ADMIN 권한 필요
                 .anyRequest().permitAll() // 나머지는 로그인 없이 접근 가능
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // 세션 관리 설정

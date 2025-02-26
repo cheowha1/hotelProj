@@ -43,8 +43,6 @@
 	<update id="updateUserPoints">
     	UPDATE users SET point = point + #{points} WHERE id = #{id}
 	</update>
-	<select id="findUserByReference" resultType="UserVo">
-    SELECT * FROM users WHERE id = #{referenceId}
-</select>
+	
 
 </mapper>

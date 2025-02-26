@@ -10,4 +10,5 @@ public interface UserService {
 	    
 	    // 마이페이지 정보 가져오기 (세션 기반)
 	    UserVo getUserFromSession(HttpSession session);
+	    void chargePoints(int amount, HttpSession session);
 }

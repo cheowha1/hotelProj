@@ -41,12 +41,12 @@ public class UserServiceImpl implements UserService {
         user.setRole("USER");
 
         // 추천인 처리 (추천인 ID 설정)
-        if (user.getReferenceId() != null && !user.getReferenceId().isEmpty()) {
-            UserVo referrer = userMapper.getUserByNickname(user.getReferenceId());
+        if (user.getReference() != null && !user.getReference().isEmpty()) {
+            UserVo referrer = userMapper.getUserByNickname(user.getReference());
             if (referrer != null) {
-                user.setReferenceId(referrer.getId()); // 추천인 ID 설정
+                user.setReference(referrer.getId()); // 추천인 ID 설정
             } else {
-                user.setReferenceId(null); // 추천인이 없으면 NULL로 설정
+                user.setReference(null); // 추천인이 없으면 NULL로 설정
             }
         }
 
@@ -54,8 +54,8 @@ public class UserServiceImpl implements UserService {
         int result = userMapper.insertUser(user);
 
         // 추천인 포인트 지급
-        if (user.getReferenceId() != null) {
-            userMapper.updateUserPoints(user.getReferenceId(), 3000);
+        if (user.getReference() != null) {
+            userMapper.updateUserPoints(user.getReference(), 3000);
         }
 
         return result > 0; // 삽입된 행이 1개 이상이면 true 반환

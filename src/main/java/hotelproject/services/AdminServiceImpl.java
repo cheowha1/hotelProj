@@ -1,10 +1,14 @@
 package hotelproject.services;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import hotelproject.controllers.UpdateUserGradeRequest;
+import hotelproject.controllers.UpdateUserPointRequest;
 import hotelproject.mappers.PointMapper;
 import hotelproject.mappers.UserMapper;
 import hotelproject.repositories.vo.PointHistoryVo;
@@ -17,22 +21,31 @@ public class AdminServiceImpl implements AdminService {
     private UserMapper userMapper;
     @Autowired
     private PointMapper pointMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public boolean updateUser(String id, UserVo user) {
-        return userMapper.updateUser(id, user);
+        return userMapper.updateUser(id,
+                passwordEncoder.encode(user.getPassword()),
+                user.getName(),
+                user.getNickname(),
+                user.getSsn(),
+                user.getPhone());
     }
 
     @Override
-    public boolean modifyUserPoints(String id, int amount, String type) {
-        userMapper.updateUserPoints(id, amount);
-        PointHistoryVo history = new PointHistoryVo(id, amount, type, new Date());
-        pointMapper.insertPointHistory(history);
+    @Transactional
+    public boolean modifyUserPoints(String id, UpdateUserPointRequest request) {
+        userMapper.updateUserPoints(id, request.amount());
+        PointHistoryVo history = new PointHistoryVo(id, request.amount(), request.type(), LocalDateTime.now());
+        pointMapper.insertPointHistory(history.getUserId(), history.getAmount(), history.getType());
         return true;
     }
 
     @Override
-    public boolean updateUserGrade(String id, String grade) {
-        return userMapper.updateUserGrade(id, grade);
+    public boolean updateUserGrade(String id, UpdateUserGradeRequest request) {
+        return userMapper.updateUserGrade(id, request.grade());
     }
 }

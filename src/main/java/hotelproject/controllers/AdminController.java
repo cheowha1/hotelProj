@@ -29,19 +29,16 @@ public class AdminController {
 	        return adminService.updateUser(id, user);
 	    }
 
-	    @PostMapping("/{id}/points/give")
-	    public boolean givePoints(@PathVariable String id, @RequestParam int amount) {
-	        return adminService.modifyUserPoints(id, amount, "지급");
-	    }
-
-	    @PostMapping("/{id}/points/deduct")
-	    public boolean deductPoints(@PathVariable String id, @RequestParam int amount) {
-	        return adminService.modifyUserPoints(id, -amount, "차감");
+	    
+	    
+	    @PostMapping("/{id}/points/update")
+	    public boolean givePoints(@PathVariable String id, @RequestBody UpdateUserPointRequest request) {
+	        return adminService.modifyUserPoints(id,request);
 	    }
 
 	    @PutMapping("/{id}/grade")
-	    public boolean updateUserGrade(@PathVariable String id, @RequestParam String grade) {
-	        return adminService.updateUserGrade(id, grade);
+	    public boolean updateUserGrade(@PathVariable String id, @RequestBody UpdateUserGradeRequest request) {
+	        return adminService.updateUserGrade(id, request);
 	    }
 	    
 	    @DeleteMapping("/{reviewNo}")
