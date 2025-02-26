@@ -13,9 +13,11 @@
         SELECT * FROM users WHERE id = #{id}
     </select>
 
-    <update id="updateUserPoints">
-        UPDATE users SET point = point + #{points} WHERE id = #{id}
-    </update>
+ <update id="updateUserPoints" parameterType="map">
+    UPDATE users
+    SET points = #{points}
+    WHERE user_id = #{userId}
+</update>
 
 	<select id="checkDuplicateId" resultType="int" parameterType="string">
     SELECT COUNT(*) FROM users WHERE id = #{id}

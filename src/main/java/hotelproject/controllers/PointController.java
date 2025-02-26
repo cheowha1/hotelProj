@@ -17,23 +17,24 @@ import hotelproject.services.PointService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/hotel/users/points")
+@RequestMapping("/users/points")
 public class PointController {
 
 	 @Autowired
 	    private PointService pointService;
-	 
 
-	 @PostMapping("/users/points/charge")
-	 public ResponseEntity<String> chargePoints(@RequestBody Map<String, Object> requestData, HttpSession session) {
-	     try {
-	         int amount = Integer.parseInt(requestData.get("amount").toString());
-	         pointService.chargePoints(amount, session);
-	         return ResponseEntity.ok("포인트 충전 완료");
-	     } catch (Exception e) {
-	         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
-	     }
-	 }
+	    // 포인트 충전
+	    @PostMapping("/charge")
+	    public ResponseEntity<String> chargePoints(@RequestBody Map<String, Object> requestData, HttpSession session) {
+	        try {
+	            String userId = (String) session.getAttribute("userId");
+	            int amount = Integer.parseInt(requestData.get("amount").toString());
+	            pointService.chargePoints(amount, userId);
+	            return ResponseEntity.ok("포인트 충전 완료");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 요청입니다.");
+	        }
+	    }
 
 	    // 포인트 사용
 	    @PostMapping("/use")

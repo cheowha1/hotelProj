@@ -1,6 +1,6 @@
 package hotelproject.repositories.vo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +9,10 @@ import lombok.Setter;
 @Setter
 public class PointHistoryVo {
 
-		private String userId;
+	 private String userId;
 	    private int amount;
 	    private String type;
-	    private String description;
-	    private Date createdAt;
+	    private LocalDateTime createdAt;
 
 	   
 }
