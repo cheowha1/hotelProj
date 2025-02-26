@@ -65,9 +65,9 @@ public class UserServiceImpl implements UserService {
 	
 	    @Override
 	    public UserVo loginUser(String id, String password) {
-	        UserVo user = userMapper.getUserById(id); // 🔥 올바른 메서드 사용
+	        UserVo user = userMapper.getUserById(id);
 	        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-	            throw new IllegalArgumentException("로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.");
+	            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
 	        }
 	        return user;
 	    }

@@ -29,7 +29,8 @@ public interface UserMapper {
 	    int insertUser(UserVo user);
 	    UserVo getUserByNickname(@Param("nickname") String nickname);
 	    boolean updateUser(@Param("userId") int userId, @Param("user") UserVo user);
-	    UserVo getUserById(@Param("id") String id);
+	    @Select("SELECT id, password FROM users WHERE id = #{id}")
+	    UserVo getUserById(String id);
 	    boolean updateUserPoints(@Param("id") String id, @Param("points") int points);
 	    int getUserPoints(@Param("id") String id);
 	    boolean updateUserGrade(@Param("id") String id, @Param("grade") String grade);
