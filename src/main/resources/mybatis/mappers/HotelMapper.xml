@@ -4,24 +4,27 @@
     
 <mapper namespace="hotelproject.mappers.HotelMapper">
 
-    <!-- 특정 호텔 조회 (phone 추가됨) -->
+    <insert id="insertHotel">
+        INSERT INTO hotel (name, location, rating, price)
+        VALUES (#{name}, #{location}, #{rating}, #{price});
+    </insert>
+
     <select id="getHotelById" resultType="hotelproject.repositories.vo.HotelVo">
-        SELECT hotelNo, name, location, phone, availableRooms, rating 
-        FROM hotel 
-        WHERE hotelNo = #{hotelNo};
+        SELECT * FROM hotel WHERE id = #{id};
     </select>
-
-    <!-- 모든 호텔 조회 (phone 추가됨) -->
-    <select id="getAllHotels" resultType="hotelproject.repositories.vo.HotelVo">
-        SELECT hotelNo, name, location, phone, availableRooms, rating 
-        FROM hotel;
-    </select>
-
-    <!-- 호텔 정보 업데이트 (phone 추가됨) -->
-    <update id="updateHotel">
-        UPDATE hotel 
-        SET name = #{name}, location = #{location}, phone = #{phone}, availableRooms = #{availableRooms}, rating = #{rating}
-        WHERE hotelNo = #{hotelNo};
+    
+  <select id="getAllHotels" resultType="hotelproject.repositories.vo.HotelVo">
+    SELECT 
+        no AS hotelNo, 
+        name, 
+        location,
+        max_room AS availableRooms, 
+        rating
+    FROM hotel;
+</select>
+	
+    <update id="updateHotelRating">
+        UPDATE hotel SET rating = #{rating} WHERE id = #{id};
     </update>
 
 </mapper>
