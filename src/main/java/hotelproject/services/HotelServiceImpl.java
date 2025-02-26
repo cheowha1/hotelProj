@@ -19,6 +19,9 @@ public class HotelServiceImpl implements HotelService {
 	    public List<HotelVo> getAllHotels() {
 	        return hotelMapper.getAllHotels();
 	    }
+	    public List<String> getHotelImages(int hotelId) {
+	        return hotelMapper.getHotelImages(hotelId);
+	    }
 
 	    @Override
 	    public HotelVo getHotelById(int hotelId) {

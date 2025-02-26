@@ -19,5 +19,6 @@ public interface HotelMapper {
     List<HotelVo> getAllHotels();
     @Select("SELECT id, name, location, phone, max_room AS availableRooms, rating FROM hotel WHERE id = #{hotelId}")
     HotelVo getHotelById(@Param("hotelId") int hotelId);
-    
+    @Select("SELECT image_url FROM hotel_images WHERE hotel_id = #{hotelId}")
+    List<String> getHotelImages(int hotelId);
 }

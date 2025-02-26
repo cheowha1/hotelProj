@@ -14,12 +14,15 @@
     </select>
     
   <select id="getAllHotels" resultType="hotelproject.vo.HotelVo">
-    SELECT id, name, location, phone, max_room AS availableRooms, rating 
-    FROM hotel;
-</select>
+   		 SELECT id, name, location, phone, max_room AS availableRooms, rating 
+ 	 	 FROM hotel;
+	</select>
 	
     <update id="updateHotelRating">
         UPDATE hotel SET rating = #{rating} WHERE id = #{id};
     </update>
 
+	<select id="getHotelImages" resultType="String">
+        SELECT image_url FROM hotel_images WHERE hotel_id = #{hotelId}
+    </select>
 </mapper>

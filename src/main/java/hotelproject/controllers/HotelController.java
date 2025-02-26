@@ -28,6 +28,11 @@ public class HotelController {
 	    public HotelVo getHotelById(@PathVariable int hotelId) {
 	        return hotelService.getHotelById(hotelId);
 	    }
+	    
+	    @GetMapping("/{hotelId}/images")
+	    public List<String> getHotelImages(@PathVariable int hotelId) {
+	        return hotelService.getHotelImages(hotelId);
+	    }
 
 	    @GetMapping("/availability/{hotelNo}")
 	    public boolean checkHotelAvailability(@PathVariable int hotelNo) {
