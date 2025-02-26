@@ -13,13 +13,8 @@
         SELECT * FROM hotel WHERE id = #{id};
     </select>
     
-  <select id="getAllHotels" resultType="hotelproject.repositories.vo.HotelVo">
-    SELECT 
-        no AS hotelNo, 
-        name, 
-        location,
-        max_room AS availableRooms, 
-        rating
+  <select id="getAllHotels" resultType="hotelproject.vo.HotelVo">
+    SELECT id, name, location, phone, max_room AS availableRooms, rating 
     FROM hotel;
 </select>
 	

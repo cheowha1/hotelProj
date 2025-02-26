@@ -15,7 +15,7 @@ public interface HotelMapper {
     HotelVo getHotelDetails(@Param("hotelNo") int hotelNo);
     int getAvailableRooms(@Param("hotelNo") int hotelNo);
     void updateHotelRating(@Param("hotelNo") int hotelNo, @Param("rating") Double rating);
-    @Select("SELECT hotelNo, name, location, phone, availableRooms, rating FROM hotel") 
+    @Select("SELECT id, name, location, phone, max_room AS availableRooms, rating FROM hotel")
     List<HotelVo> getAllHotels();
     
 }
