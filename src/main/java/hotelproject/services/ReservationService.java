@@ -1,16 +1,13 @@
 package hotelproject.services;
 
 import java.util.List;
+
 import hotelproject.repositories.vo.ReservationVo;
+import jakarta.servlet.http.HttpSession;
 
 public interface ReservationService {
-    int insertReservation(ReservationVo reservation);	//	예약등록(추가)
-    ReservationVo getReservationById(int reservationNo);	//	예약 상세조회
-    List<ReservationVo> getAllReservations();	//	예약 목록조회
-    int updateReservation(ReservationVo reservation);	//	예약수정
-    int deleteReservation(int reservationNo);	//	예약취소
-    List<ReservationVo> getUserReservations(String email); // 예약 내역 조회
-    boolean usePointForReservationPoints(int userNo, int amount);	//	예약 시 포인트 사용
-    void earnPointsFromReservation(int userNo, int amount);	//	예약 완료 후 포인트 적립
-    void refundPointsForCanceledReservation(int UserNo, int amount);	//	예약 취소 시 포인트 반환
+   
+	 boolean bookHotel(HttpSession session, int hotelId, int cost); 
+	 boolean cancelReservation(HttpSession session, int reservationId); 
+	 List<ReservationVo> getUserReservations(HttpSession session);
 }

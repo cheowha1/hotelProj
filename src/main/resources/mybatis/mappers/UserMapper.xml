@@ -1,76 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+    
 <mapper namespace="hotelproject.mappers.UserMapper">
 
-    <!-- 이메일 중복 체크 -->
-    <select id="existsByEmail" resultType="int">
-        SELECT COUNT(*) FROM users WHERE email = #{email}
+    <insert id="insertUser">
+        INSERT INTO users (id, password, name, nickname, phone, address, marketing_opt_in)
+        VALUES (#{id}, #{password}, #{name}, #{nickname}, #{phone}, #{address}, #{marketingOptIn})
+    </insert>
+
+    <select id="getUserById" resultType="hotelproject.repositories.vo.UserVo">
+        SELECT * FROM users WHERE id = #{id}
     </select>
-    
-    <!-- 닉네임 중복 체크 -->
-    <select id="existsByNickname" resultType="int">
-        SELECT COUNT(*) FROM users WHERE nickname = #{nickname}
-    </select>
-    
-    <!-- 주민번호 중복 체크 -->
-    <select id="existsBySsn" resultType="int">
-        SELECT COUNT(*) FROM users WHERE ssn = #{ssn}
-    </select>
-    
-    <!-- 전화번호 중복 체크 -->
-    <select id="existsByPhone" resultType="int">
-        SELECT COUNT(*) FROM users WHERE phone = #{phone}
-    </select>
-    
-    <!-- 회원 정보 저장 -->
-	<insert id="saveUser">
-    INSERT INTO users (email, password, nickname, name, ssn, phone, grade, point)
-    VALUES (#{email}, #{password}, #{nickname}, #{name}, #{ssn}, #{phone}, #{grade}, #{point});
-	</insert>
-    
-    <!-- 이메일 기준으로 사용자 정보 조회 -->
-    <select id="findByEmail" resultType="hotelproject.repositories.vo.UserVo">
-        SELECT * FROM users WHERE email = #{email}
-    </select>
-    
-    <!--포인트 기능추가 -->
-    <!-- 회원의 포인트 사용내역조회 -->
-	<select id="getUserPointHistory" resulType="int">
-	SELECT no, point, updated_at FROM users
-	WHERE no = #{userNo}
-	</select>
-	 
-      <!-- 포인트 적립 -->
-    <update id="earnPoints">
-        UPDATE users SET point = point + #{amount} WHERE no = #{userNo}
+
+    <update id="updateUserPoints">
+        UPDATE users SET point = point + #{points} WHERE id = #{id}
     </update>
 
-    <!-- 포인트 사용 -->
-    <update id="usePoints">
-        UPDATE users SET point = point - #{amount} WHERE no = #{userNo} AND point >= #{amount}
-    </update>
-    
-    <!-- 결제 후 포인트 적립 (결제 금액의 10% 적립) -->
-    <update id="addPointsAfterPayment">
-        UPDATE users 
-        SET point = point + (#{amount} * 0.1) 
-        WHERE no = #{userNo}
-    </update>
-    
-     <!-- 마이페이지에서 포인트 충전 -->
-    <update id="chargeUserPoints">
-        UPDATE users 
-        SET point = point + #{amount} 
-        WHERE no = #{userNo}
-    </update>
-    
-    <!-- 호텔 예약 시 포인트 차감 -->
-    <update id="deductPointForReservation">
-    UPDATE users SET point = point - #{amount}
-    WHERE no = #{userNo} AND point >= #{amount};
-    </update>
-   
 </mapper>

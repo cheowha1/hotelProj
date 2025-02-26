@@ -1,41 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-<mapper namespace="hotelproject.mapper.ReviewMapper">
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="hotelproject.mappers.ReviewMapper">
 
-    <!-- 리뷰 추가 -->
     <insert id="insertReview">
-        INSERT INTO reviews (userid, hotel_name, review_text, rating, created_at)
-        VALUES (#{userid}, #{hotelName}, #{reviewText}, #{rating}, NOW());
+        INSERT INTO reviews (hotel_id, user_id, rating, comment, created_at)
+        VALUES (#{hotelId}, #{userId}, #{rating}, #{comment}, NOW());
     </insert>
 
-    <!--  호텔의 리뷰 목록 조회 -->
-    <select id="getReviewsByHotel" resultType="hotelproject.repositories.vo.ReviewVo">
-        SELECT * FROM reviews WHERE hotel_name = #{hotelName} ORDER BY created_at DESC;
+    <select id="getReviewsByHotelId" resultType="hotelproject.repositories.vo.ReviewVo">
+        SELECT * FROM reviews WHERE hotel_id = #{hotelId} ORDER BY created_at DESC;
     </select>
 
-    <!--  호텔의 평균 별점 조회 -->
-    <select id="getAverageRating" resultType="Double">
-        SELECT IFNULL(AVG(rating), 0) FROM reviews WHERE hotel_name = #{hotelName};
-    </select>
-
-    <!-- 리뷰 수정 -->
     <update id="updateReview">
-        UPDATE reviews 
-        SET review_text = #{reviewText}, rating = #{rating}, created_at = NOW()
-        WHERE userid = #{userid} AND hotel_name = #{hotelName};
+        UPDATE reviews SET rating = #{rating}, comment = #{comment} WHERE id = #{id};
     </update>
 
-    <!-- 리뷰 삭제 -->
-    <delete id="deleteReview">
-        DELETE FROM reviews WHERE userid = #{userid} AND hotel_name = #{hotelName};
-    </delete>
-    
-    <!-- 별점 등록 -->
-    <insert id="insertRating">
-    INSERT INTO reviews (hotel_name, userid, rating, created_at)
-    VALUES (#{hotelName}, #{userId}, #{rating}, NOW());
-	</insert>
-    
 </mapper>

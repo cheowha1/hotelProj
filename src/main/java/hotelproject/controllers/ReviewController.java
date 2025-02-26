@@ -1,68 +1,38 @@
 package hotelproject.controllers;
 
-import hotelproject.services.ReviewService;
-import hotelproject.repositories.vo.ReviewVo;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import hotelproject.services.ReviewService;
 
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
+	  @Autowired
+	    private ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
+	    @PostMapping("/add")
+	    public boolean addReview(@RequestParam int hotelNo, @RequestParam String userId, 
+	                             @RequestParam String comment, @RequestParam int rating) {
+	        return reviewService.addReview(hotelNo, userId, comment, rating);
+	    }
 
-    // 리뷰 등록
-    @PostMapping
-    public ResponseEntity<String> addReview(@RequestBody ReviewVo review) {
-        reviewService.insertReview(review);
-        return ResponseEntity.ok("리뷰가 등록되었습니다.");
-    }
-    
-    // 별점 등록
-    @PostMapping("/{hotelName}/rating")
-    public ResponseEntity<String> insertRating(
-    	   @PathVariable int hotelName,
-    	   @RequestParam Long userId,
-    	   @RequestParam int rating) {
-    	reviewService.insertRating(hotelName, userId, rating);
-    	return ResponseEntity.ok("별점이 등록되었습니다.");
-    }
-    
-    // 호텔의 리뷰 조회
-    @GetMapping("/{hotelName}")
-    public ResponseEntity<List<ReviewVo>> getReviews(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getReviews(hotelName));
-    }
+	    @PutMapping("/update/{reviewNo}")
+	    public boolean updateReview(@PathVariable int reviewNo, @RequestParam String userId,
+	                                @RequestParam String comment, @RequestParam int rating) {
+	        return reviewService.updateReview(reviewNo, userId, comment, rating);
+	    }
 
-    // 호텔의 평균 평점 조회
-    @GetMapping("/{hotelName}/rating")
-    public ResponseEntity<Double> getAverageRating(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getAverageRating(hotelName));
-    }
-
-    // 호텔의 별점 문자열 반환
-    @GetMapping("/{hotelName}/stars")
-    public ResponseEntity<String> getStarRating(@PathVariable int hotelName) {
-        return ResponseEntity.ok(reviewService.getStarRating(hotelName));
-    }
-
-    // 리뷰 수정
-    @PutMapping
-    public ResponseEntity<String> updateReview(@RequestBody ReviewVo review) {
-        reviewService.updateReview(review);
-        return ResponseEntity.ok("리뷰가 수정되었습니다.");
-    }
-
-    // 리뷰 삭제
-    @DeleteMapping
-    public ResponseEntity<String> deleteReview(@RequestBody ReviewVo review) {
-        reviewService.deleteReview(review);
-        return ResponseEntity.ok("리뷰가 삭제되었습니다.");
-    }
+	    @DeleteMapping("/delete/{reviewNo}")
+	    public boolean deleteReview(@PathVariable int reviewNo, @RequestParam String userId) {
+	        return reviewService.deleteReview(reviewNo, userId);
+	    }
+	    
 }

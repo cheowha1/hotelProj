@@ -1,74 +1,79 @@
 package hotelproject.services;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import hotelproject.mappers.HotelMapper;
 import hotelproject.mappers.ReviewMapper;
 import hotelproject.repositories.vo.ReviewVo;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewMapper reviewMapper;
+	@Autowired
+    private ReviewMapper reviewMapper;
+    @Autowired
+    private HotelMapper hotelMapper;
+
+    @Override
+    public boolean addReview(int hotelNo, String userId, String comment, int rating) {
+        reviewMapper.insertReview(new ReviewVo(hotelNo, userId, comment, rating));
+        updateHotelRating(hotelNo);
+        return true;
+    }
+
+    @Override
+    public boolean updateReview(int reviewNo, String userId, String comment, int rating) {
+        ReviewVo existingReview = reviewMapper.getReviewById(reviewNo);
+        if (existingReview == null || !existingReview.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("리뷰를 찾을 수 없거나 수정할 권한이 없습니다.");
+        }
+        reviewMapper.updateReview(reviewNo, comment, rating);
+        updateHotelRating(existingReview.getHotelNo());
+        return true;
+    }
+
+    @Override
+    public boolean deleteReview(int reviewNo, String userId) {
+        ReviewVo existingReview = reviewMapper.getReviewById(reviewNo);
+        if (existingReview == null || !existingReview.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("리뷰를 찾을 수 없거나 삭제할 권한이 없습니다.");
+        }
+        reviewMapper.deleteReview(reviewNo);
+        updateHotelRating(existingReview.getHotelNo());
+        return true;
+    }
     
-    // 	ReviewMapper 주입
-    public ReviewServiceImpl(ReviewMapper reviewMapper) {
-        this.reviewMapper = reviewMapper;
-    }
-
-    //	리뷰등록 
+    
     @Override
-    @Transactional
-    public void insertReview(ReviewVo review) {
-        reviewMapper.insertReview(review);
+    public boolean deleteReviewByAdmin(int reviewNo) {
+        ReviewVo existingReview = reviewMapper.getReviewById(reviewNo);
+        if (existingReview == null) {
+            throw new IllegalArgumentException("삭제할 리뷰를 찾을 수 없습니다.");
+        }
+        reviewMapper.deleteReview(reviewNo);
+        updateHotelRating(existingReview.getHotelNo());
+        return true;
     }
     
-    //	별점등록
- // 별점 등록 기능 추가
     @Override
-    @Transactional
-    public void insertRating(int hotelName, Long userid, int rating) {
-        reviewMapper.insertRating(hotelName, userid, rating);
+    public List<ReviewVo> getAllReviews() {
+        return reviewMapper.getAllReviews();
     }
 
-    //	리뷰목록 조회
     @Override
-    public List<ReviewVo> getReviews(int hotelName) {
-        return reviewMapper.getReviewsByHotel(hotelName);
+    public List<ReviewVo> getUserReviews(int userNo) {
+        return reviewMapper.getUserReviews(userNo);
     }
 
-    //	리뷰 평균별점 조회
     @Override
-    public double getAverageRating(int hotelName) {
-        Double average = reviewMapper.getAverageRating(hotelName);
-        return average != null ? average : 0.0;
+    public List<ReviewVo> getHotelReviews(int hotelNo) {
+        return reviewMapper.getHotelReviews(hotelNo);
     }
-
-    //	리뷰 수정
-    @Override
-    public void updateReview(ReviewVo review) {
-        reviewMapper.updateReview(review);
-    }
-
-    //	리뷰 삭제
-    @Override
-    public void deleteReview(ReviewVo review) {
-        reviewMapper.deleteReview(review);
-    }
-
-    /**
-     * 별점 등급을 계산하여 반환하는 메서드
-     */
-    @Override
-    public String getStarRating(int hotelName) {
-        double avgRating = getAverageRating(hotelName);
-        return generateStarString(avgRating);
-    }
-
-    /**
-     * 평균 별점을 "⭐⭐⭐⭐" 형태의 문자열로 변환
-     */
-    private String generateStarString(double rating) {
-        int fullStars = (int) Math.round(rating);
-        return "⭐".repeat(fullStars);
+    
+    private void updateHotelRating(int hotelNo) {
+        Double newAverageRating = reviewMapper.calculateAverageRating(hotelNo);
+        hotelMapper.updateHotelRating(hotelNo, newAverageRating);
     }
 }
