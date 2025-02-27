@@ -1,12 +1,12 @@
 package hotelproject.mappers;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import hotelproject.repositories.vo.ReservationVo;
 
@@ -28,7 +28,8 @@ public interface ReservationMapper {
 		                             @Param("checkInDate") String string,
 		                             @Param("checkOutDate") String string2);
 
-	 
+	 @Update("UPDATE reservations SET reservation_status = '취소됨' WHERE id = #{reservationId}")
+	    void cancelReservation(int reservationId);
 //	  ReservationVo getReservationById(@Param("reservationId") int reservationId);
 //	  void deleteReservation(@Param("reservationId") int reservationId);
 //	  List<ReservationVo> getUserReservations(@Param("userId") String userId);

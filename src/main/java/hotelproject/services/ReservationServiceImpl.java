@@ -66,6 +66,13 @@ public class ReservationServiceImpl implements ReservationService {
 	        return reservationMapper.getReservationsByUserId(userId);
 	    }
 
+	    @Transactional
+	    @Override
+	    public void cancelReservation(int reservationId) {
+	        System.out.println("예약 취소 요청: " + reservationId); // 디버깅 로그
+	        reservationMapper.cancelReservation(reservationId);
+	        System.out.println("예약 취소 완료"); // 디버깅 로그
+	    }
 
 }
     

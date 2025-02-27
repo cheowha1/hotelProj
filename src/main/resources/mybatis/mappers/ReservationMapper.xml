@@ -16,5 +16,8 @@
    <!--  <update id="updateReservationStatus">
         UPDATE reservations SET status = #{status} WHERE id = #{id};
     </update> -->
+    <update id="cancelReservation">
+    UPDATE reservations SET reservation_status = '취소됨' WHERE reservation_id = #{reservationId}
+</update>
 
 </mapper>

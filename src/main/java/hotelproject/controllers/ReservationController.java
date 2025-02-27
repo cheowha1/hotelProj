@@ -33,4 +33,13 @@ public class ReservationController {
 	        boolean success = reservationService.bookReservation(request, userId);
 	        return success ? ResponseEntity.ok("예약 성공!") : ResponseEntity.status(500).body("예약 실패!");
 	    }
+	    
+	    @PostMapping("/cancel")
+	    public String cancelReservation(@RequestBody ReservationCancelRequest request) {
+	        reservationService.cancelReservation(request.reservationId());
+	        return "예약이 취소되었습니다.";
+	    }
+
+	    /** ✅ Request DTO (record 활용) */
+	    public record ReservationCancelRequest(int reservationId) {}
 }

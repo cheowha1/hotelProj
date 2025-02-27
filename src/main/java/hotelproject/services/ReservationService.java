@@ -12,4 +12,5 @@ public interface ReservationService {
 //	 List<ReservationVo> getUserReservations(HttpSession session);
 	  boolean bookReservation(ReservationRequest request, String userId);
 	    List<ReservationVo> getUserReservations(String userId);
+	    void cancelReservation(int reservationId);
 }
