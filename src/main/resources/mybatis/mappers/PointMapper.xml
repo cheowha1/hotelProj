@@ -21,9 +21,12 @@
     </update>
 
     <!-- 포인트 내역 조회 -->
-    <select id="getPointHistory" resultType="hotelproject.repositories.vo.PointHistoryVo" parameterType="string">
-        SELECT * FROM point_history WHERE user_id = #{userId}
-        ORDER BY created_at DESC;
-    </select>
+    <select id="getPointHistory" resultType="hotelproject.repositories.vo.PointHistoryVo">
+    SELECT user_id, amount, type, created_at
+    FROM points
+    WHERE user_id = #{userId}
+    ORDER BY created_at DESC
+</select>
+
 
 </mapper>

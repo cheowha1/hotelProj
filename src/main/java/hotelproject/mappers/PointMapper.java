@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import hotelproject.repositories.vo.PointHistoryVo;
 
@@ -23,10 +25,16 @@ public interface PointMapper {
    
 
     // 특정 유저의 포인트 업데이트
-    void updateUserPoints(@Param("userId") String userId, @Param("points") int points);
+	@Update(
+		    "UPDATE users SET point = point + #{amount} WHERE id = #{userId}"
+		)
+		void updateUserPoints(@Param("userId") String userId, @Param("amount") int amount);
+
+
 
     // 포인트 내역 조회
-    List<PointHistoryVo> getPointHistory(@Param("userId") String userId);
+	@Select("SELECT * FROM points WHERE user_id = #{userId} ORDER BY created_at DESC")
+	List<PointHistoryVo> getPointHistory(@Param("userId") String userId);
 
     // 포인트 충전 내역 조회 (관리자용)
     List<PointHistoryVo> getAllPointHistory();
