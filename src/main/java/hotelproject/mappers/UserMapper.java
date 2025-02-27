@@ -30,7 +30,7 @@ public interface UserMapper {
 	    int insertUser(UserVo user);
 	    UserVo getUserByNickname(@Param("nickname") String nickname);
 	    @Update("UPDATE users SET " +
-				"password = #{password}, " +
+//				"password = #{password}, " +
 				"name = #{name}, " +
 				"nickname = #{nickname}, " +
 				"ssn = #{ssn}, " +

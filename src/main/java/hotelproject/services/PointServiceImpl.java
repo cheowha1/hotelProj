@@ -46,7 +46,7 @@ public class PointServiceImpl implements PointService {
 
 	        // 포인트 차감
 	        userMapper.updateUserPoints(userId, currentPoints - amount);
-	        pointMapper.insertPointUsageHistory(userId, amount, "사용");
+	        pointMapper.insertPointHistory(userId, amount, "사용");
 
 	        // 포인트 사용 후 등급 변경
 	        updateUserGrade(userId);
