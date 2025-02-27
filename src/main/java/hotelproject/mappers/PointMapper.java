@@ -30,13 +30,19 @@ public interface PointMapper {
 		)
 		void updateUserPoints(@Param("userId") String userId, @Param("amount") int amount);
 
+	 //  현재 유저의 보유 포인트 조회 (잔액)
+	@Select("SELECT point FROM users WHERE id = #{userId}")
+	Integer getUserPoints(@Param("userId") String userId);
 
-
+	
     // 포인트 내역 조회
 	@Select("SELECT * FROM points WHERE user_id = #{userId} ORDER BY created_at DESC")
 	List<PointHistoryVo> getPointHistory(@Param("userId") String userId);
 
     // 포인트 충전 내역 조회 (관리자용)
     List<PointHistoryVo> getAllPointHistory();
+    
+    @Update("UPDATE users SET points = points - #{amount} WHERE id = #{userId} AND points >= #{amount}")
+    void deductUserPoints(@Param("userId") String userId, @Param("amount") int amount);
     
 }

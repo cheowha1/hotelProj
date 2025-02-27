@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import hotelproject.repositories.vo.RoomVo;
 
@@ -21,4 +22,7 @@ public interface RoomMapper {
     //  특정 객실의 이미지 리스트 조회 (객실 ID 기준)
     @Select("SELECT image_url FROM room_images WHERE room_id = #{roomId}")
     List<String> getRoomImages(@Param("roomId") int roomId);
+    
+    @Update("UPDATE rooms SET available_rooms = available_rooms - 1 WHERE id = #{roomId} AND available_rooms > 0")
+    void updateRoomAvailability(@Param("roomId") int roomId);
 }

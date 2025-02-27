@@ -4,17 +4,17 @@
     
 <mapper namespace="hotelproject.mappers.ReservationMapper">
 
-    <insert id="insertReservation">
-        INSERT INTO reservations (user_id, hotel_id, check_in, check_out, status, created_at)
-        VALUES (#{userId}, #{hotelId}, #{checkIn}, #{checkOut}, 'PENDING', NOW());
+     <insert id="insertReservation">
+        INSERT INTO reservations (user_id, hotel_id, room_id, room_name, check_in_date, check_out_date, adult_count, child_count, total_price, reservation_status)
+        VALUES (#{userId}, #{hotelId}, #{roomId}, #{roomName}, #{checkInDate}, #{checkOutDate}, #{adultCount}, #{childCount}, #{totalPrice}, '예약 중')
     </insert>
 
-    <select id="getReservationsByUserId" resultType="hotelproject.repositories.vo.ReservationVo">
-        SELECT * FROM reservations WHERE user_id = #{userId} ORDER BY created_at DESC;
+     <select id="getReservationsByUserId" resultType="hotelproject.repositories.vo.ReservationVo">
+        SELECT * FROM reservations WHERE user_id = #{userId}
     </select>
 
-    <update id="updateReservationStatus">
+   <!--  <update id="updateReservationStatus">
         UPDATE reservations SET status = #{status} WHERE id = #{id};
-    </update>
+    </update> -->
 
 </mapper>

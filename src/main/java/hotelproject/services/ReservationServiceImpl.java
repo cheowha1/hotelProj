@@ -1,88 +1,71 @@
 package hotelproject.services;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import hotelproject.mappers.PointMapper;
+import hotelproject.controllers.ReservationRequest;
 import hotelproject.mappers.ReservationMapper;
-import hotelproject.mappers.UserMapper;
-import hotelproject.repositories.vo.PointHistoryVo;
+import hotelproject.mappers.RoomMapper;
 import hotelproject.repositories.vo.ReservationVo;
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
 
-		@Autowired
-	    private UserMapper userMapper;
+	 private final ReservationMapper reservationMapper;
+	    private final PointService pointService; // ✅ 포인트 서비스 추가
+	    private final RoomMapper roomMapper;
+
 	    @Autowired
-	    private ReservationMapper reservationMapper;
-	    @Autowired
-	    private PointMapper pointMapper;
+	    public ReservationServiceImpl(ReservationMapper reservationMapper, 
+	                                  PointService pointService, // ✅ 추가
+	                                  RoomMapper roomMapper) {   // ✅ 추가
+	        this.reservationMapper = reservationMapper;
+	        this.pointService = pointService;  // ✅ 추가
+	        this.roomMapper = roomMapper;      // ✅ 추가
+	    }
 
 	    @Override
-	    public boolean bookHotel(HttpSession session, int hotelId, int cost) {
-	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
+	    @Transactional
+	    public boolean bookReservation(ReservationRequest request, String userId) {
+	    	 if (reservationMapper.checkExistingReservation(userId, request.roomId(), request.checkInDate(), request.checkOutDate()) > 0) {
+	    	        return false; // 🚫 중복 예약이면 예약 불가능
+	    	    }
+	    	
+	        // ✅ 1. 현재 유저의 포인트 조회
+	        int userPoints = pointService.getUserPoints(userId);
+	        if (userPoints < request.totalPrice()) {
+	            return false; // 포인트 부족으로 예약 실패
 	        }
 
-	        int currentPoints = userMapper.getUserPoints(userId);
-	        if (currentPoints < cost) {
-	            throw new IllegalArgumentException("포인트가 부족합니다.");
-	        }
-	        
-	        // 포인트 차감
-	        userMapper.updateUserPoints(userId, -cost);
-	        
-	        // 예약 내역 저장
-	        ReservationVo reservation = new ReservationVo(userId, hotelId, cost, new Date());
+	        // ✅ 2. 예약 정보 저장
+	        ReservationVo reservation = new ReservationVo(
+	            userId, request.hotelId(), request.roomId(), request.roomName(),
+	            request.checkInDate(), request.checkOutDate(),
+	            request.adultCount(), request.childCount(), request.totalPrice(), "예약 중"
+	        );
 	        reservationMapper.insertReservation(reservation);
-	        
-	        // 포인트 사용 내역 저장
-	        PointHistoryVo history = new PointHistoryVo(userId, -cost, "예약", new Date());
-	        pointMapper.insertPointHistory(history);
-	        
+
+	        // ✅ 3. 포인트 차감
+	        pointService.deductUserPoints(userId, request.totalPrice());
+
+	        // ✅ 4. 포인트 사용 내역 기록
+	        pointService.insertPointHistory(userId, -request.totalPrice(), "사용");
+
+	        // ✅ 5. 방 개수 감소
+	        roomMapper.updateRoomAvailability(request.roomId());
+
 	        return true;
 	    }
 
+	    // ✅ 인터페이스의 getUserReservations 메서드 구현 (오류 해결)
 	    @Override
-	    public boolean cancelReservation(HttpSession session, int reservationId) {
-	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
-	        }
-
-	        ReservationVo reservation = reservationMapper.getReservationById(reservationId);
-	        if (reservation == null || !reservation.getUserId().equals(userId)) {
-	            throw new IllegalArgumentException("예약을 찾을 수 없거나 권한이 없습니다.");
-	        }
-	        
-	        // 포인트 환불
-	        userMapper.updateUserPoints(userId, reservation.getCost());
-	        
-	        // 예약 취소
-	        reservationMapper.deleteReservation(reservationId);
-	        
-	        // 포인트 환불 내역 저장
-	        PointHistoryVo history = new PointHistoryVo(userId, reservation.getCost(), "예약 취소", new Date());
-	        pointMapper.insertPointHistory(history);
-	        
-	        return true;
+	    public List<ReservationVo> getUserReservations(String userId) {
+	        return reservationMapper.getReservationsByUserId(userId);
 	    }
-	    
-	    @Override
-	    public List<ReservationVo> getUserReservations(HttpSession session) {
-	        String userId = (String) session.getAttribute("userId"); // ✅ 세션에서 userId 가져오기
-	        if (userId == null) {
-	            throw new IllegalArgumentException("로그인이 필요합니다.");
-	        }
 
-	        return reservationMapper.getUserReservations(userId);
-	    }
-    
+
 }
     

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hotelproject.mappers.PointMapper;
 import hotelproject.mappers.UserMapper;
@@ -76,5 +77,24 @@ public class PointServiceImpl implements PointService {
 
 	        // 등급 업데이트
 	        userMapper.updateUserGrade(userId, grade);
+	    }
+	    
+	    public int getUserPoints(String userId) {
+	        Integer userPoints = pointMapper.getUserPoints(userId);
+	        return (userPoints != null) ? userPoints : 0; // 만약 NULL이면 0 반환
+	    }
+	    
+	    @Override
+	    @Transactional
+	    public void deductUserPoints(String userId, int amount) {
+	        // ✅ 유저 포인트 차감
+	        pointMapper.updateUserPoints(userId, -amount);
+	    }
+
+	    @Override
+	    @Transactional
+	    public void insertPointHistory(String userId, int amount, String type) {
+	        // ✅ 포인트 사용 내역 추가
+	        pointMapper.insertPointHistory(userId, amount, type);
 	    }
 }

@@ -1,61 +1,35 @@
 package hotelproject.repositories.vo;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 
 public class ReservationVo {
-	
-	 private int reservationId;
-	    private String userId;
-	    private int hotelId;
-	    private int cost;
-	    private Date createdAt;
+    private int id;  // 예약 ID (PK)
+    private String userId;  // 유저 ID (VARCHAR)
+    private int hotelId;  // 호텔 ID (DB에서 INT)
+    private int roomId;  // 룸 ID (DB에서 INT)
+    private String roomName;  // 룸 이름
+    private String checkInDate;  // 체크인 날짜 (DB에서 DATE, String으로 저장)
+    private String checkOutDate;  // 체크아웃 날짜 (DB에서 DATE, String으로 저장)
+    private int adultCount;  // 성인 수 (DB에서 INT)
+    private int childCount;  // 아이 수 (DB에서 INT)
+    private int totalPrice;  // 총 금액 (DB에서 INT)
+    private String reservationStatus;  // 예약 상태 (DB에서 VARCHAR)
 
-	    public ReservationVo(String userId, int hotelId, int cost, Date createdAt) {
-	        this.userId = userId;
-	        this.hotelId = hotelId;
-	        this.cost = cost;
-	        this.createdAt = createdAt;
-	    }
+    public ReservationVo(String userId, int hotelId, int roomId, String roomName, String checkInDate, String checkOutDate, int adultCount, int childCount, int totalPrice, String reservationStatus) {
+        this.userId = userId;
+        this.hotelId = hotelId;
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.adultCount = adultCount;
+        this.childCount = childCount;
+        this.totalPrice = totalPrice;
+        this.reservationStatus = reservationStatus;
+    }
 
-		public int getReservationId() {
-			return reservationId;
-		}
-
-		public void setReservationId(int reservationId) {
-			this.reservationId = reservationId;
-		}
-
-		public String getUserId() {
-			return userId;
-		}
-
-		public void setUserId(String userId) {
-			this.userId = userId;
-		}
-
-		public int getHotelId() {
-			return hotelId;
-		}
-
-		public void setHotelId(int hotelId) {
-			this.hotelId = hotelId;
-		}
-
-		public int getCost() {
-			return cost;
-		}
-
-		public void setCost(int cost) {
-			this.cost = cost;
-		}
-
-		public Date getCreatedAt() {
-			return createdAt;
-		}
-
-		public void setCreatedAt(Date createdAt) {
-			this.createdAt = createdAt;
-		}
-	    
-	    
 }
