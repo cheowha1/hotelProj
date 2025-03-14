@@ -17,6 +17,7 @@ public class PointHistoryVo {
 	    private int amount;
 	    private String type;
 	    private LocalDateTime createdAt;
+	    
 
 	   
 }
